@@ -7,15 +7,11 @@ import SMSNotifications from "./components/SMSNotifications";
 const App = () => (
   <div className="app-shell">
     <LanguageSwitcher />
-    <div className="left-panel">
-      <SMSNotifications />
-    </div>
+    <SMSNotifications />
     <div className="map-frame">
       <MapView />
     </div>
-    <div className="right-panel">
-      <RightStatsPanel />
-    </div>
+    <RightStatsPanel />
   </div>
 );
 
