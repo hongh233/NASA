@@ -1,6 +1,6 @@
 from pathlib import Path
 
-DATA_ROOT = Path("data/downloads/all_source")
+DATA_ROOT = Path("data/all_source")
 
 OUTPUT_DIR = Path("outputs")
 CHECKPOINT_DIR = OUTPUT_DIR / "checkpoints"

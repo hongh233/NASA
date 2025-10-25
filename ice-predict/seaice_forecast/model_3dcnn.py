@@ -5,7 +5,7 @@ class SeaIce3DCNN(nn.Module):
     def __init__(self, in_seq: int):
         super().__init__()
         self.encoder = nn.Sequential(
-            nn.Conv3d(1, 16, kernel_size=(3,3,3), padding=1),
+            nn.Conv3d(3, 16, kernel_size=(3,3,3), padding=1),
             nn.BatchNorm3d(16),
             nn.ReLU(),
             nn.Conv3d(16, 32, kernel_size=(3,3,3), padding=1),
