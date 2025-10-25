@@ -1,11 +1,14 @@
+import { useTranslation } from "react-i18next";
+
 type ParameterToolsProps = {
     message: string;
 };
 
 export const ParameterTools = ({message}: ParameterToolsProps) => {
+    const { t } = useTranslation();
 
     function handleClick(){
-        if(message == "Start Point"){
+        if(message == t('tools.startPoint')){
             console.log("should open a start point");
         }
         else{
@@ -16,7 +19,7 @@ export const ParameterTools = ({message}: ParameterToolsProps) => {
         <div className="tool-card tool-card--stacked">
             <h3>{message}</h3>
 
-            <button onClick={handleClick}>Drop a pin point</button>
+            <button onClick={handleClick}>{t('tools.dropPin')}</button>
         </div>
     )
 }

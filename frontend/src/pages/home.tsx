@@ -1,11 +1,15 @@
 import { useState } from 'react';
+import { useTranslation } from 'react-i18next';
 import { Calendar } from '../components/Calendar';
 import { ParameterTools } from '../components/ParameterTools';
 import MapView from '../components/MapView';
 import RightStatsPanel from '../components/RightStatsPanel';   
 import { HamburgerButton } from '../components/HamburgerButton';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import SMSNotifications from '../components/SMSNotifications';
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [toolsVisible, setToolsVisible] = useState(true);
 
   const toggleToolsVisibility = () => {
@@ -18,6 +22,7 @@ const HomePage = () => {
 
   return (
     <div className="app-shell">
+      <SMSNotifications />
       <div className="map-frame">
         <div className="tool-bar">
           <HamburgerButton
@@ -27,9 +32,10 @@ const HomePage = () => {
           />
 
           <div id="mission-tools-panel" className={cardsClassName}>
+            <LanguageSwitcher />
             <Calendar />
-            <ParameterTools message="Start Point" />
-            <ParameterTools message="Destination" />
+            <ParameterTools message={t('tools.startPoint')} />
+            <ParameterTools message={t('tools.destination')} />
           </div>
         </div>
         <MapView />
