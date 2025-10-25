@@ -1,7 +1,9 @@
 import {useEffect, useRef, useState} from "react";
 import type {FormEvent, PointerEventHandler} from "react";
+import { useTranslation } from "react-i18next";
 
 export const Calendar = () => {
+    const { t } = useTranslation();
 
     // calendar date
     const [date, setDate] = useState((new Date()));
@@ -107,10 +109,10 @@ export const Calendar = () => {
 
     let label;
     if(isOpen){
-        label = "Close Calendar";
+        label = t('calendar.closeCalendar');
     }
     else{
-        label = "Select Date";
+        label = t('calendar.selectDate');
     }
 
     return(

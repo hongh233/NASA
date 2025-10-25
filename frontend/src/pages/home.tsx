@@ -2,10 +2,15 @@ import { useCallback, useState } from "react";
 import { Calendar } from "../components/Calendar";
 import MapView from "../components/MapView";
 import RightStatsPanel from "../components/RightStatsPanel";
-import { HamburgerButton } from "../components/HamburgerButton";
 import type { RouteControls } from "../components/routePredictions/AnimatedRouteOverlay";
+import { useTranslation } from 'react-i18next';
+import { ParameterTools } from '../components/ParameterTools'; 
+import { HamburgerButton } from '../components/HamburgerButton';
+import LanguageSwitcher from '../components/LanguageSwitcher';
+import SMSNotifications from '../components/SMSNotifications';
 
 const HomePage = () => {
+  const { t } = useTranslation();
   const [toolsVisible, setToolsVisible] = useState(true);
   const [routeStatus, setRouteStatus] = useState("idle");
   const [routeControls, setRouteControls] = useState<RouteControls>({
@@ -39,12 +44,16 @@ const HomePage = () => {
 
   return (
     <div className="app-shell">
+      <SMSNotifications />
       <div className="map-frame">
         <div className="tool-bar">
           <HamburgerButton expanded={toolsVisible} onToggle={toggleToolsVisibility} />
 
           <div id="mission-tools-panel" className={cardsClassName}>
+            <LanguageSwitcher />
             <Calendar />
+            <ParameterTools message={t('tools.startPoint')} />
+            <ParameterTools message={t('tools.destination')} />
             <div className="tool-card tool-card--stacked tool-card--route">
               <h3>Route Tools</h3>
               <button
