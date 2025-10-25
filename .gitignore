@@ -29,3 +29,6 @@ logs/
 # Python virtual environment
 venv/
 env/
+
+./ice-predict/data/all_source/
+**/.DS_Store

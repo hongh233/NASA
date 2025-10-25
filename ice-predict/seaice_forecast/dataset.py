@@ -46,21 +46,30 @@ class SeaIceDataset(Dataset):
     def __len__(self):
         return len(self.indices)
 
-    def _read_mask(self, path: Path):
+    def _read_frame(self, path: Path):
         with rasterio.open(path) as src:
             arr = src.read(1)
-        mask = (arr == 1).astype(np.float32)
-        mask[self.dist_km < self.radius_km] = 0
-        return mask
+        seaice = (arr == 1).astype(np.float32)
+        land = (arr == 254).astype(np.float32)
+        border = (arr == 253).astype(np.float32)
+
+        # 挖空极点附近
+        mask = self.dist_km < self.radius_km
+        seaice[mask] = 0
+        land[mask] = 0
+        border[mask] = 0
+
+        return np.stack([seaice, land, border], axis=0)  # (3, H, W)
 
     def __getitem__(self, idx):
         t = self.indices[idx]
         seq_files = self.files[t - self.seq_len : t]
         target_file = self.files[t]
 
-        seq = np.stack([self._read_mask(f) for f in seq_files], axis=0)
-        target = self._read_mask(target_file)
+        seq = np.stack([self._read_frame(f) for f in seq_files], axis=0)  # (seq, 3, H, W)
+        target = self._read_frame(target_file)[0]  # 只取海冰通道作为目标
 
-        X = torch.tensor(seq).unsqueeze(1)  # (seq,1,H,W)
-        y = torch.tensor(target).unsqueeze(0)
+        X = torch.tensor(seq, dtype=torch.float32)  # (seq, 3, H, W)
+        y = torch.tensor(target, dtype=torch.float32).unsqueeze(0)  # (1, H, W)
         return X, y
+
