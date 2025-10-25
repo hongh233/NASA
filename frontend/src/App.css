@@ -74,6 +74,7 @@
   align-items: stretch;
   gap: 0.5rem;
   text-align: left;
+  text-align: center;
 }
 
 .tool-card--stacked button {
@@ -94,6 +95,7 @@
 
 .tool-card--calendar span {
   font-size: 0.9rem;
+  text-align: center;
 }
 
 .tool-card--calendar .calendar-quick-jump {
