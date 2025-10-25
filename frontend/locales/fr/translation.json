@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "title": "Explorateur Côtier NASA",
+    "language": "Langue"
+  },
+  "map": {
+    "title": "Vue Côtière",
+    "loading": "Chargement des données cartographiques...",
+    "error": "Erreur lors du chargement de la carte",
+    "iceLayer": "Couche de Perte de Glace",
+    "zoomIn": "Zoomer",
+    "zoomOut": "Dézoomer",
+    "resetView": "Réinitialiser la vue"
+  },
+  "stats": {
+    "title": "Métriques de Glace Arctique",
+    "subtitle": "Suivez la perte mensuelle de glace de mer, l'étendue et les indicateurs climatiques connexes.",
+    "monthlyChange": "Changement Mensuel",
+    "monthlyChangeValue": "-52 000 km²",
+    "monthlyChangeMeta": "vs. moyenne de janvier",
+    "iceThickness": "Épaisseur Moyenne de Glace",
+    "iceThicknessValue": "1,4 m",
+    "iceThicknessMeta": "Hémisphère Nord",
+    "anomaly": "Anomalie",
+    "anomalyValue": "-8%",
+    "anomalyMeta": "Relative à la base 1981-2010",
+    "coastalErosion": "Érosion Côtière",
+    "seaLevelRise": "Élévation du Niveau de la Mer",
+    "temperature": "Température",
+    "precipitation": "Précipitation",
+    "windSpeed": "Vitesse du Vent",
+    "units": {
+      "meters": "mètres",
+      "celsius": "°C",
+      "millimeters": "mm",
+      "kmh": "km/h"
+    }
+  },
+  "controls": {
+    "reset": "Réinitialiser la Vue",
+    "zoomIn": "Zoomer",
+    "zoomOut": "Dézoomer",
+    "layers": "Couches"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "noData": "Aucune donnée disponible",
+    "close": "Fermer",
+    "open": "Ouvrir"
+  }
+}

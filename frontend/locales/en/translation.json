@@ -1,0 +1,52 @@
+{
+  "nav": {
+    "title": "NASA Coastal Explorer",
+    "language": "Language"
+  },
+  "map": {
+    "title": "Coastal View",
+    "loading": "Loading map data...",
+    "error": "Error loading map",
+    "iceLayer": "Ice Loss Layer",
+    "zoomIn": "Zoom in",
+    "zoomOut": "Zoom out",
+    "resetView": "Reset view"
+  },
+  "stats": {
+    "title": "Arctic Ice Metrics",
+    "subtitle": "Track monthly sea ice loss, extent, and related climate indicators.",
+    "monthlyChange": "Monthly Change",
+    "monthlyChangeValue": "-52,000 km²",
+    "monthlyChangeMeta": "vs. January average",
+    "iceThickness": "Average Ice Thickness",
+    "iceThicknessValue": "1.4 m",
+    "iceThicknessMeta": "Northern Hemisphere",
+    "anomaly": "Anomaly",
+    "anomalyValue": "-8%",
+    "anomalyMeta": "Relative to 1981-2010 baseline",
+    "coastalErosion": "Coastal Erosion",
+    "seaLevelRise": "Sea Level Rise",
+    "temperature": "Temperature",
+    "precipitation": "Precipitation",
+    "windSpeed": "Wind Speed",
+    "units": {
+      "meters": "meters",
+      "celsius": "°C",
+      "millimeters": "mm",
+      "kmh": "km/h"
+    }
+  },
+  "controls": {
+    "reset": "Reset View",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out",
+    "layers": "Layers"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "Error",
+    "noData": "No data available",
+    "close": "Close",
+    "open": "Open"
+  }
+}
