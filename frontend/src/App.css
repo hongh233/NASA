@@ -16,11 +16,250 @@
   flex: 1;
   position: relative;
   min-width: 0;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.tool-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: stretch;
+  gap: 12px;
+  max-width: calc(100vw - 380px);
+  flex-wrap: wrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tool-bar > * {
+  pointer-events: auto;
+}
+
+.tool-toggle {
+  display: inline-flex;
+  width: 48px;
+  min-width: 48px;
+  min-height: 88px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(112, 144, 255, 0.35);
+  background: rgba(10, 18, 40, 0.25);
+  color: #f4f7ff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tool-toggle:hover,
+.tool-toggle:focus-visible {
+  background: rgba(126, 162, 255, 0.35);
+  border-color: rgba(126, 162, 255, 0.55);
+}
+
+.tool-toggle:focus-visible {
+  outline: 2px solid rgba(98, 134, 255, 0.8);
+  outline-offset: 3px;
+}
+
+.tool-toggle__icon {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tool-toggle__icon span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.tool-toggle--active .tool-toggle__icon span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.tool-toggle--active .tool-toggle__icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.tool-toggle--active .tool-toggle__icon span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+.tool-bar__cards {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tool-bar__cards--hidden {
+  display: none;
+}
+
+@media (max-width: 1200px) {
+  .tool-card {
+    width: clamp(200px, 32vw, 260px);
+  }
+}
+
+@media (max-width: 960px) {
+  .tool-bar {
+    max-width: calc(100vw - 32px);
+  }
+}
+
+.tool-card {
+  pointer-events: auto;
+  width: clamp(180px, 18vw, 220px);
+  height: 100%;
+  box-sizing: border-box;
+  min-height: 88px;
+  padding: 0.65rem 0.85rem;
+  border-radius: 12px;
+  background: rgba(10, 18, 40, 0.1);
+  border: 1px solid rgba(112, 144, 255, 0.18);
+  box-shadow: 0 8px 20px rgba(2, 8, 28, 0.25);
+  color: #f4f7ff;
+}
+
+.tool-card h3 {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tool-card button {
+  background: rgba(98, 134, 255, 0.3);
+  color: #f4f7ff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.45rem 0.75rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tool-card button:hover {
+  background: rgba(126, 162, 255, 0.75);
+}
+
+.tool-card--stacked {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: stretch;
+  gap: 0.5rem;
+  text-align: left;
+  text-align: center;
+}
+
+.tool-card--stacked button {
+  align-self: stretch;
+}
+
+.tool-card--calendar {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-rows: auto auto;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.tool-card--calendar button {
+  padding: 0.35rem 0.6rem;
+}
+
+.tool-card--calendar span {
+  font-size: 0.9rem;
+  text-align: center;
+}
+
+.tool-card--calendar .calendar-quick-jump {
+  grid-column: 1 / span 2;
+  display: flex;
+  align-items: flex-end;
+  gap: 0.75rem;
+  margin-top: 0.25rem;
+}
+
+.calendar-quick-jump__field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  color: rgba(244, 247, 255, 0.75);
+}
+
+.calendar-quick-jump__field input {
+  background: rgba(6, 12, 28, 0.6);
+  border: 1px solid rgba(112, 144, 255, 0.4);
+  border-radius: 6px;
+  color: #f4f7ff;
+  padding: 0.35rem 0.5rem;
+  width: 4.5rem;
+}
+
+.calendar-quick-jump__field input:focus {
+  outline: none;
+  border-color: rgba(140, 170, 255, 0.7);
+  box-shadow: 0 0 0 2px rgba(82, 120, 255, 0.25);
+}
+
+.calendar-quick-jump__submit {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  border: 0;
+  pointer-events: none;
 }
 
 .map-container {
+  position: relative;
   width: 100%;
   height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(92, 132, 255, 0.25);
+  background: rgba(8, 17, 40, 0.35);
+}
+
+.map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+.animated-route-status {
+  font-size: 0.85rem;
+  color: rgba(220, 230, 255, 0.85);
+  display: block;
+  min-height: 1.2rem;
+}
+
+.tool-card--route {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tool-card--route h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tool-card--route button {
+  align-self: stretch;
 }
 
 .stats-panel {
@@ -31,6 +270,7 @@
   flex-direction: column;
   gap: 1.75rem;
   background: rgba(8, 17, 40, 0.92);
+  -webkit-backdrop-filter: blur(12px);
   backdrop-filter: blur(12px);
   border-left: 1px solid rgba(76, 115, 255, 0.25);
   box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);

@@ -25,6 +25,24 @@ const RightStatsPanel = () => {
         <p className="stats-card__value">-8%</p>
         <p className="stats-card__meta">Relative to 1981-2010 baseline</p>
       </section>
+
+      <section className="stats-card">
+        <h2 className="stats-card__label">Anomaly</h2>
+        <p className="stats-card__value">-8%</p>
+        <p className="stats-card__meta">Relative to 1981-2010 baseline</p>
+      </section>
+
+      <section className="stats-card">
+        <h2 className="stats-card__label">Anomaly</h2>
+        <p className="stats-card__value">-8%</p>
+        <p className="stats-card__meta">Relative to 1981-2010 baseline</p>
+      </section>
+
+      <section className="stats-card">
+        <h2 className="stats-card__label">Anomaly</h2>
+        <p className="stats-card__value">-8%</p>
+        <p className="stats-card__meta">Relative to 1981-2010 baseline</p>
+      </section>
     </aside>
   );
 };
