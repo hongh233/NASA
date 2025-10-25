@@ -1,5 +1,5 @@
 import {useEffect, useRef, useState} from "react";
-import type {PointerEventHandler} from "react";
+import type {FormEvent, PointerEventHandler} from "react";
 
 export const Calendar = () => {
 
@@ -8,6 +8,8 @@ export const Calendar = () => {
 
     // calendar is open?
     const [isOpen, setIsOpen] = useState(false);
+    const [monthInput, setMonthInput] = useState("");
+    const [yearInput, setYearInput] = useState("");
 
     const adjustDate = (offset: number) => {
         setDate((prevDate) => {
@@ -65,7 +67,40 @@ export const Calendar = () => {
     };
 
     // toggle calendar visibility
-    const toggleCalendar = () => setIsOpen(!isOpen);
+    const toggleCalendar = () => {
+        if (isOpen) {
+            setIsOpen(false);
+            return;
+        }
+
+        const current = date;
+        setMonthInput(String(current.getMonth() + 1).padStart(2, "0"));
+        setYearInput(String(current.getFullYear()));
+        setIsOpen(true);
+    };
+
+    const handleJumpSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const monthValue = parseInt(monthInput, 10);
+        const yearValue = parseInt(yearInput, 10);
+
+        if (!Number.isFinite(monthValue) || monthValue < 1 || monthValue > 12) {
+            return;
+        }
+
+        if (!Number.isFinite(yearValue) || yearValue < 1) {
+            return;
+        }
+
+        const next = new Date(date);
+        next.setFullYear(yearValue);
+        next.setMonth(monthValue - 1, 1);
+        next.setHours(0, 0, 0, 0);
+
+        setDate(next);
+        setIsOpen(false);
+    };
 
     // format date (YYYY - MM - DD)
     const formatDate = (d: Date) => d.toISOString().split("T")[0];
@@ -96,6 +131,30 @@ export const Calendar = () => {
                 onPointerLeave={handlePointerEnd}
                 onPointerCancel={handlePointerEnd}
             >↓</button>
+            {isOpen && (
+                <form className="calendar-quick-jump" onSubmit={handleJumpSubmit}>
+                    <label className="calendar-quick-jump__field">
+                        <span>Month</span>
+                        <input
+                            type="number"
+                            min="1"
+                            max="12"
+                            value={monthInput}
+                            onChange={(event) => setMonthInput(event.target.value)}
+                        />
+                    </label>
+                    <label className="calendar-quick-jump__field">
+                        <span>Year</span>
+                        <input
+                            type="number"
+                            min="1"
+                            value={yearInput}
+                            onChange={(event) => setYearInput(event.target.value)}
+                        />
+                    </label>
+                    <button type="submit">Jump</button>
+                </form>
+            )}
         </div>
 
     )
