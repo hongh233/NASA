@@ -39,12 +39,12 @@ export const Calendar = () => {
     }
 
     return(
-        <div>
+        <div className="tool-card tool-card--calendar">
             <button onClick={toggleCalendar}>{label}</button>
             <button onClick={prevDate}>↑</button>
             <span>{formatDate(date)}</span>
             <button onClick={nextDate}>↓</button>
         </div>
-        
+
     )
 }
