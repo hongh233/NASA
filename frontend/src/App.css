@@ -28,6 +28,8 @@
   display: flex;
   align-items: stretch;
   gap: 12px;
+  max-width: calc(100vw - 380px);
+  flex-wrap: wrap;
   z-index: 10;
   pointer-events: none;
 }
@@ -93,6 +95,7 @@
 .tool-bar__cards {
   display: flex;
   align-items: stretch;
+  flex-wrap: wrap;
   gap: 12px;
   transition: opacity 0.2s ease, transform 0.2s ease;
 }
@@ -101,13 +104,25 @@
   display: none;
 }
 
+@media (max-width: 1200px) {
+  .tool-card {
+    width: clamp(200px, 32vw, 260px);
+  }
+}
+
+@media (max-width: 960px) {
+  .tool-bar {
+    max-width: calc(100vw - 32px);
+  }
+}
+
 .tool-card {
   pointer-events: auto;
-  width: clamp(220px, 24vw, 280px);
+  width: clamp(180px, 18vw, 220px);
   height: 100%;
   box-sizing: border-box;
   min-height: 88px;
-  padding: 0.75rem 1rem;
+  padding: 0.65rem 0.85rem;
   border-radius: 12px;
   background: rgba(10, 18, 40, 0.1);
   border: 1px solid rgba(112, 144, 255, 0.18);
