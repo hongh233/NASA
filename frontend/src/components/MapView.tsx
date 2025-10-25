@@ -78,6 +78,15 @@ const MapView = () => {
           map.getCanvas().style.cursor = '';
         });
 
+        // Optional: Trigger SMS notification when new ice data is loaded
+        // This is commented out to avoid spam, but could be used for real updates
+        /*
+        const shouldNotify = localStorage.getItem('sms_auto_notify') === 'true';
+        if (shouldNotify) {
+          triggerSMSNotification();
+        }
+        */
+
       } catch (error) {
         console.warn("Ice loss data not available:", error);
         
@@ -145,6 +154,29 @@ const MapView = () => {
       console.log(`Map language updated to: ${language}`);
     } catch (error) {
       console.warn('Could not update map language:', error);
+    }
+  };
+
+  // Helper function to trigger SMS notifications (for integration)
+  const triggerSMSNotification = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/sms/broadcast', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          type: 'ice_loss',
+          language: i18n.language
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log(`SMS notifications sent to ${data.sent_count} subscribers`);
+      }
+    } catch (error) {
+      console.log('SMS service not available for automatic notifications');
     }
   };
 

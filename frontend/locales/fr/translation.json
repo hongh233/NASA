@@ -48,5 +48,56 @@
     "noData": "Aucune donnée disponible",
     "close": "Fermer",
     "open": "Ouvrir"
+  },
+  "sms": {
+    "title": "Notifications SMS",
+    "description": "Recevez les mises à jour de la glace arctique directement sur votre téléphone. Restez informé des changements critiques en temps réel.",
+    "phoneLabel": "Numéro de téléphone",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "subscribe": "S'abonner aux mises à jour SMS",
+    "subscribing": "Abonnement en cours...",
+    "unsubscribe": "Se désabonner",
+    "unsubscribing": "Désabonnement en cours...",
+    "subscribed": "Vous êtes abonné aux mises à jour SMS",
+    "subscribeSuccess": "Abonnement aux mises à jour SMS réussi !",
+    "unsubscribeSuccess": "Désabonnement des mises à jour SMS réussi.",
+    "broadcastSuccess": "Mise à jour de test envoyée à {{count}} abonnés.",
+    "scheduleSuccess": "Message programmé avec succès !",
+    "scheduleArcticSuccess": "Mise à jour arctique programmée pour {{count}} abonnés.",
+    "cancelSuccess": "Message programmé annulé avec succès.",
+    "errors": {
+      "phoneRequired": "Le numéro de téléphone est requis",
+      "invalidPhone": "Veuillez entrer un numéro de téléphone valide",
+      "subscribeFailed": "Échec de l'abonnement. Veuillez réessayer.",
+      "unsubscribeFailed": "Échec du désabonnement. Veuillez réessayer.",
+      "broadcastFailed": "Échec de l'envoi des mises à jour. Veuillez réessayer.",
+      "serviceUnavailable": "Le service SMS est actuellement indisponible",
+      "scheduleRequired": "La date et l'heure sont requises",
+      "messageRequired": "Le message est requis",
+      "pastDate": "L'heure programmée doit être dans le futur",
+      "scheduleFailed": "Échec de la programmation du message. Veuillez réessayer.",
+      "cancelFailed": "Échec de l'annulation du message programmé. Veuillez réessayer."
+    },
+    "admin": {
+      "title": "Contrôles administrateur",
+      "sendTest": "Envoyer une mise à jour de test à tous les abonnés",
+      "sending": "Envoi en cours...",
+      "subscribers": "{{count}} abonnés actifs",
+      "subscribersList": "Abonnés actifs"
+    },
+    "scheduler": {
+      "title": "Programmer des messages",
+      "show": "Afficher le programmateur",
+      "hide": "Masquer le programmateur",
+      "date": "Date",
+      "time": "Heure",
+      "personal": "Message personnel",
+      "customMessage": "Message personnalisé",
+      "messagePlaceholder": "Entrez votre message personnalisé...",
+      "schedulePersonal": "Programmer un message personnel",
+      "scheduling": "Programmation en cours...",
+      "scheduledMessages": "Messages programmés",
+      "cancel": "Annuler"
+    }
   }
 }
