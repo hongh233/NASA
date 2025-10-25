@@ -30,7 +30,7 @@ const MapView = () => {
 
     map.on("load", async () => {
       try {
-        const response = await fetch("/dataset/seaice_extent_filtered.geojson");
+        const response = await fetch("/dataset/seaice_extent.geojson");
         if (!response.ok) {
           throw new Error(`Failed to load ice dataset: ${response.statusText}`);
         }
@@ -46,11 +46,12 @@ const MapView = () => {
 
         map.addLayer({
           id: "iceLoss-fill",
-          type: "fill",
+          type: "circle",
           source: "iceLoss",
           paint: {
-            "fill-color": "#ff4b4b",
-            "fill-opacity": 0.6,
+            "circle-radius": 3, 
+            "circle-color": "#ff4b4b", 
+            "circle-opacity": 0.7, 
           },
         });
       } catch (error) {

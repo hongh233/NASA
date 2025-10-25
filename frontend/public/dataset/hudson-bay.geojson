@@ -1,0 +1,23 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "name": "Example Hudson Bay Route",
+        "description": "Test route through Hudson Bay"
+      },
+      "geometry": {
+        "type": "LineString",
+        "coordinates": [
+          [-85.0, 63.0],  
+          [-85.5, 64.0],
+          [-86.0, 65.0],
+          [-86.5, 66.0],
+          [-87.0, 67.0], 
+          [-87.5, 68.0]
+        ]
+      }
+    }
+  ]
+}
