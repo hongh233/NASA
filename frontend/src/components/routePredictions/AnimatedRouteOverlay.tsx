@@ -152,6 +152,7 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded }: AnimatedRouteOverlayProps) =
     return [];
   }, []);
 
+  // to be used (now is empty so that the code compiles)
   const requestRoutePrediction = useCallback(
     async (start: Position, end: Position) => {
       if (!map) return;
