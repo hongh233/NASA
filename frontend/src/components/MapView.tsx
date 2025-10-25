@@ -1,12 +1,14 @@
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import type { FeatureCollection } from "geojson";
 import "mapbox-gl/dist/mapbox-gl.css";
 import parsedEnv from "../config/env";
+import AnimatedRouteOverlay from "./routePredictions/AnimatedRouteOverlay";
 
 const MapView = () => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
+  const [isMapLoaded, setIsMapLoaded] = useState(false);
   const accessToken = parsedEnv.VITE_MAPBOX_TOKEN;
 
   useEffect(() => {
@@ -29,6 +31,7 @@ const MapView = () => {
     mapRef.current = map;
 
     map.on("load", async () => {
+      setIsMapLoaded(true);
       try {
         const response = await fetch("/dataset/seaice_extent.geojson");
         if (!response.ok) {
@@ -60,12 +63,18 @@ const MapView = () => {
     });
 
     return () => {
+      setIsMapLoaded(false);
       map.remove();
       mapRef.current = null;
     };
   }, [accessToken]);
 
-  return <div ref={mapContainer} className="map-container" />;
+  return (
+    <div className="map-container">
+      <div ref={mapContainer} className="map-canvas" />
+      <AnimatedRouteOverlay map={mapRef.current} isMapLoaded={isMapLoaded} />
+    </div>
+  );
 };
 
 export default MapView;
