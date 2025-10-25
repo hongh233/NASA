@@ -1,4 +1,5 @@
-import {useState} from "react";
+import {useEffect, useRef, useState} from "react";
+import type {PointerEventHandler} from "react";
 
 export const Calendar = () => {
 
@@ -8,21 +9,60 @@ export const Calendar = () => {
     // calendar is open?
     const [isOpen, setIsOpen] = useState(false);
 
-    const nextDate = () => {
-        const newDate = new Date(date);
+    const adjustDate = (offset: number) => {
+        setDate((prevDate) => {
+            const updated = new Date(prevDate);
+            updated.setDate(prevDate.getDate() + offset);
+            return updated;
+        });
+    };
 
-        newDate.setDate(date.getDate() + 1);
+    const repeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+    const suppressClickRef = useRef(false);
 
-        setDate(newDate);
-    }
+    const clearRepeat = () => {
+        if (repeatIntervalRef.current) {
+            clearInterval(repeatIntervalRef.current);
+            repeatIntervalRef.current = null;
+        }
+    };
 
-    const prevDate = () => {
-        const newDate = new Date(date);
+    type ButtonPointerEvent = Parameters<PointerEventHandler<HTMLButtonElement>>[0];
 
-        newDate.setDate(date.getDate() - 1);
-        
-        setDate(newDate);
-    }
+    const stopContinuousUpdate = (event?: ButtonPointerEvent) => {
+        if (event) {
+            const {currentTarget, pointerId} = event;
+            if (currentTarget.hasPointerCapture(pointerId)) {
+                currentTarget.releasePointerCapture(pointerId);
+            }
+        }
+        clearRepeat();
+    };
+
+    useEffect(() => () => clearRepeat(), []);
+
+    const createPointerDownHandler = (direction: number): PointerEventHandler<HTMLButtonElement> => (event) => {
+        suppressClickRef.current = true;
+        event.currentTarget.setPointerCapture(event.pointerId);
+        adjustDate(direction);
+        clearRepeat();
+        repeatIntervalRef.current = setInterval(() => adjustDate(direction), 150);
+    };
+
+    const handlePointerEnd: PointerEventHandler<HTMLButtonElement> = (event) => {
+        stopContinuousUpdate(event);
+        if (event.type !== "pointerup") {
+            suppressClickRef.current = false;
+        }
+    };
+
+    const createClickHandler = (direction: number) => () => {
+        if (suppressClickRef.current) {
+            suppressClickRef.current = false;
+            return;
+        }
+        adjustDate(direction);
+    };
 
     // toggle calendar visibility
     const toggleCalendar = () => setIsOpen(!isOpen);
@@ -41,9 +81,21 @@ export const Calendar = () => {
     return(
         <div className="tool-card tool-card--calendar">
             <button onClick={toggleCalendar}>{label}</button>
-            <button onClick={prevDate}>↑</button>
+            <button
+                onClick={createClickHandler(-1)}
+                onPointerDown={createPointerDownHandler(-1)}
+                onPointerUp={handlePointerEnd}
+                onPointerLeave={handlePointerEnd}
+                onPointerCancel={handlePointerEnd}
+            >↑</button>
             <span>{formatDate(date)}</span>
-            <button onClick={nextDate}>↓</button>
+            <button
+                onClick={createClickHandler(1)}
+                onPointerDown={createPointerDownHandler(1)}
+                onPointerUp={handlePointerEnd}
+                onPointerLeave={handlePointerEnd}
+                onPointerCancel={handlePointerEnd}
+            >↓</button>
         </div>
 
     )
