@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import mapboxgl from "mapbox-gl";
-import axios from "axios";
+import type { FeatureCollection } from "geojson";
+// import axios from "axios";
 import "mapbox-gl/dist/mapbox-gl.css";
 
 const MapView = () => {
@@ -27,19 +28,52 @@ const MapView = () => {
     });
     mapRef.current = map;
 
+    // map.on("load", async () => {
+    //   const { data } = await axios.get(`${parsedEnv.VITE_API_BASE}/ice_loss`);
+    //   map.addSource("iceLoss", { type: "geojson", data });
+    //   map.addSource("iceLoss", { 
+    //     type: "geojson", data });
+    //   map.addLayer({
+    //     id: "iceLoss",
+    //     type: "fill",
+    //     source: "iceLoss",
+    //     paint: {
+    //       "fill-color": "#ff4b4b",
+    //       "fill-opacity": 0.6,
+    //     },
+    //   });
+    // });
+
     map.on("load", async () => {
-      const { data } = await axios.get(`${import.meta.env.VITE_API_BASE}/ice_loss`);
-      map.addSource("iceLoss", { type: "geojson", data });
-      map.addLayer({
-        id: "iceLoss",
-        type: "fill",
-        source: "iceLoss",
-        paint: {
-          "fill-color": "#ff4b4b",
-          "fill-opacity": 0.6,
-        },
-      });
+      try {
+        const response = await fetch("/dataset/seaice_extent.geojson");
+        if (!response.ok) {
+          throw new Error(`Failed to load ice dataset: ${response.statusText}`);
+        }
+        console.log("Dataset fetch response:", response);
+
+        const iceData = (await response.json()) as FeatureCollection;
+        console.log("Ice Data:", iceData);
+
+        map.addSource("iceLoss", {
+          type: "geojson",
+          data: iceData,
+        });
+
+        map.addLayer({
+          id: "iceLoss-fill",
+          type: "fill",
+          source: "iceLoss",
+          paint: {
+            "fill-color": "#ff4b4b",
+            "fill-opacity": 0.6,
+          },
+        });
+      } catch (error) {
+        console.error("Error loading ice dataset:", error);
+      }
     });
+
 
     return () => {
       map.remove();
