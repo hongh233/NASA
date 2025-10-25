@@ -1,34 +1,34 @@
 {
   "nav": {
-    "title": "Explorateur Côtier NASA",
+    "title": "Explorateur Côtier de l'ASC",
     "language": "Langue"
   },
   "map": {
-    "title": "Vue Côtière",
+    "title": "Vue côtière",
     "loading": "Chargement des données cartographiques...",
     "error": "Erreur lors du chargement de la carte",
-    "iceLayer": "Couche de Perte de Glace",
+    "iceLayer": "Couche de fonte des glaces",
     "zoomIn": "Zoomer",
     "zoomOut": "Dézoomer",
     "resetView": "Réinitialiser la vue"
   },
   "stats": {
-    "title": "Métriques de Glace Arctique",
+    "title": "Métriques de la glace arctique",
     "subtitle": "Suivez la perte mensuelle de glace de mer, l'étendue et les indicateurs climatiques connexes.",
-    "monthlyChange": "Changement Mensuel",
+    "monthlyChange": "Changement mensuel",
     "monthlyChangeValue": "-52 000 km²",
     "monthlyChangeMeta": "vs. moyenne de janvier",
-    "iceThickness": "Épaisseur Moyenne de Glace",
+    "iceThickness": "Épaisseur moyenne de la glace",
     "iceThicknessValue": "1,4 m",
     "iceThicknessMeta": "Hémisphère Nord",
     "anomaly": "Anomalie",
     "anomalyValue": "-8%",
-    "anomalyMeta": "Relative à la base 1981-2010",
-    "coastalErosion": "Érosion Côtière",
-    "seaLevelRise": "Élévation du Niveau de la Mer",
+    "anomalyMeta": "Par rapport à la période de référence 1981-2010",
+    "coastalErosion": "Érosion côtière",
+    "seaLevelRise": "Élévation du niveau de la mer",
     "temperature": "Température",
     "precipitation": "Précipitation",
-    "windSpeed": "Vitesse du Vent",
+    "windSpeed": "Vitesse du vent",
     "units": {
       "meters": "mètres",
       "celsius": "°C",
@@ -37,7 +37,7 @@
     }
   },
   "controls": {
-    "reset": "Réinitialiser la Vue",
+    "reset": "Réinitialiser la vue",
     "zoomIn": "Zoomer",
     "zoomOut": "Dézoomer",
     "layers": "Couches"
@@ -69,12 +69,12 @@
     "subscribing": "Abonnement en cours...",
     "unsubscribe": "Se désabonner",
     "unsubscribing": "Désabonnement en cours...",
-    "subscribed": "Vous êtes abonné aux mises à jour SMS",
-    "subscribeSuccess": "Abonnement aux mises à jour SMS réussi !",
-    "unsubscribeSuccess": "Désabonnement des mises à jour SMS réussi.",
+    "subscribed": "Vous êtes abonné(e) aux mises à jour SMS",
+    "subscribeSuccess": "Vous êtes maintenant abonné(e) aux mises à jour SMS !",
+    "unsubscribeSuccess": "Vous avez été désabonné(e) des mises à jour SMS.",
     "broadcastSuccess": "Mise à jour de test envoyée à {{count}} abonnés.",
     "scheduleSuccess": "Message programmé avec succès !",
-    "scheduleArcticSuccess": "Mise à jour arctique programmée pour {{count}} abonnés.",
+    "scheduleArcticSuccess": "Mise à jour sur l’Arctique programmée pour {{count}} abonnés.",
     "cancelSuccess": "Message programmé annulé avec succès.",
     "errors": {
       "phoneRequired": "Le numéro de téléphone est requis",
@@ -97,9 +97,9 @@
       "subscribersList": "Abonnés actifs"
     },
     "scheduler": {
-      "title": "Programmer des messages",
-      "show": "Afficher le programmateur",
-      "hide": "Masquer le programmateur",
+      "title": "Planification de messages",
+      "show": "Afficher la planification",
+      "hide": "Masquer la planification",
       "date": "Date",
       "time": "Heure",
       "personal": "Message personnel",
