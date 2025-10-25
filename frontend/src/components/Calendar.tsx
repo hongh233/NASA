@@ -152,7 +152,7 @@ export const Calendar = () => {
                             onChange={(event) => setYearInput(event.target.value)}
                         />
                     </label>
-                    <button type="submit">Jump</button>
+                    <button className="calendar-quick-jump__submit" type="submit" aria-hidden="true" />
                 </form>
             )}
         </div>

@@ -127,9 +127,15 @@
   box-shadow: 0 0 0 2px rgba(82, 120, 255, 0.25);
 }
 
-.tool-card--calendar .calendar-quick-jump button[type="submit"] {
-  align-self: stretch;
-  padding: 0.45rem 0.9rem;
+.calendar-quick-jump__submit {
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
+  opacity: 0;
+  border: 0;
+  pointer-events: none;
 }
 
 .map-container {
