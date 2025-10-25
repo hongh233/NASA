@@ -1,7 +1,9 @@
 import axios from "axios";
+import parsedEnv from "../config/env";
 
-const mapApi = axios.create({
-  baseURL: import.meta.env.VITE_API_BASE,
+const api = axios.create({
+  baseURL: `${parsedEnv.VITE_API_BASE}${parsedEnv.VITE_API_PREFIX}`,
+  withCredentials: true
 });
 
-export default mapApi;
+export default api;
