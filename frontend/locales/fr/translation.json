@@ -1,0 +1,114 @@
+{
+  "nav": {
+    "title": "Explorateur Côtier NASA",
+    "language": "Langue"
+  },
+  "map": {
+    "title": "Vue Côtière",
+    "loading": "Chargement des données cartographiques...",
+    "error": "Erreur lors du chargement de la carte",
+    "iceLayer": "Couche de Perte de Glace",
+    "zoomIn": "Zoomer",
+    "zoomOut": "Dézoomer",
+    "resetView": "Réinitialiser la vue"
+  },
+  "stats": {
+    "title": "Métriques de Glace Arctique",
+    "subtitle": "Suivez la perte mensuelle de glace de mer, l'étendue et les indicateurs climatiques connexes.",
+    "monthlyChange": "Changement Mensuel",
+    "monthlyChangeValue": "-52 000 km²",
+    "monthlyChangeMeta": "vs. moyenne de janvier",
+    "iceThickness": "Épaisseur Moyenne de Glace",
+    "iceThicknessValue": "1,4 m",
+    "iceThicknessMeta": "Hémisphère Nord",
+    "anomaly": "Anomalie",
+    "anomalyValue": "-8%",
+    "anomalyMeta": "Relative à la base 1981-2010",
+    "coastalErosion": "Érosion Côtière",
+    "seaLevelRise": "Élévation du Niveau de la Mer",
+    "temperature": "Température",
+    "precipitation": "Précipitation",
+    "windSpeed": "Vitesse du Vent",
+    "units": {
+      "meters": "mètres",
+      "celsius": "°C",
+      "millimeters": "mm",
+      "kmh": "km/h"
+    }
+  },
+  "controls": {
+    "reset": "Réinitialiser la Vue",
+    "zoomIn": "Zoomer",
+    "zoomOut": "Dézoomer",
+    "layers": "Couches"
+  },
+  "common": {
+    "loading": "Chargement...",
+    "error": "Erreur",
+    "noData": "Aucune donnée disponible",
+    "close": "Fermer",
+    "open": "Ouvrir"
+  },
+  "calendar": {
+    "closeCalendar": "Fermer le calendrier",
+    "selectDate": "Sélectionner la date",
+    "month": "Mois",
+    "year": "Année"
+  },
+  "tools": {
+    "startPoint": "Point de départ",
+    "destination": "Destination",
+    "dropPin": "Placer un point"
+  },
+  "sms": {
+    "title": "Notifications SMS",
+    "description": "Recevez les mises à jour de la glace arctique directement sur votre téléphone. Restez informé des changements critiques en temps réel.",
+    "phoneLabel": "Numéro de téléphone",
+    "phonePlaceholder": "+1 (555) 123-4567",
+    "subscribe": "S'abonner aux mises à jour SMS",
+    "subscribing": "Abonnement en cours...",
+    "unsubscribe": "Se désabonner",
+    "unsubscribing": "Désabonnement en cours...",
+    "subscribed": "Vous êtes abonné aux mises à jour SMS",
+    "subscribeSuccess": "Abonnement aux mises à jour SMS réussi !",
+    "unsubscribeSuccess": "Désabonnement des mises à jour SMS réussi.",
+    "broadcastSuccess": "Mise à jour de test envoyée à {{count}} abonnés.",
+    "scheduleSuccess": "Message programmé avec succès !",
+    "scheduleArcticSuccess": "Mise à jour arctique programmée pour {{count}} abonnés.",
+    "cancelSuccess": "Message programmé annulé avec succès.",
+    "errors": {
+      "phoneRequired": "Le numéro de téléphone est requis",
+      "invalidPhone": "Veuillez entrer un numéro de téléphone valide",
+      "subscribeFailed": "Échec de l'abonnement. Veuillez réessayer.",
+      "unsubscribeFailed": "Échec du désabonnement. Veuillez réessayer.",
+      "broadcastFailed": "Échec de l'envoi des mises à jour. Veuillez réessayer.",
+      "serviceUnavailable": "Le service SMS est actuellement indisponible",
+      "scheduleRequired": "La date et l'heure sont requises",
+      "messageRequired": "Le message est requis",
+      "pastDate": "L'heure programmée doit être dans le futur",
+      "scheduleFailed": "Échec de la programmation du message. Veuillez réessayer.",
+      "cancelFailed": "Échec de l'annulation du message programmé. Veuillez réessayer."
+    },
+    "admin": {
+      "title": "Contrôles administrateur",
+      "sendTest": "Envoyer une mise à jour de test à tous les abonnés",
+      "sending": "Envoi en cours...",
+      "subscribers": "{{count}} abonnés actifs",
+      "subscribersList": "Abonnés actifs"
+    },
+    "scheduler": {
+      "title": "Programmer des messages",
+      "show": "Afficher le programmateur",
+      "hide": "Masquer le programmateur",
+      "date": "Date",
+      "time": "Heure",
+      "personal": "Message personnel",
+      "customMessage": "Message personnalisé",
+      "messagePlaceholder": "Entrez votre message personnalisé...",
+      "schedulePersonal": "Programmer un message personnel",
+      "scheduling": "Programmation en cours...",
+      "scheduledMessages": "Messages programmés",
+      "cancel": "Annuler"
+    }
+  }
+}
