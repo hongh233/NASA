@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useCallback, useState } from "react";
+import { Calendar } from "../components/Calendar";
+import MapView from "../components/MapView";
+import RightStatsPanel from "../components/RightStatsPanel";
+import type { RouteControls } from "../components/routePredictions/AnimatedRouteOverlay";
 import { useTranslation } from 'react-i18next';
-import { Calendar } from '../components/Calendar';
-import { ParameterTools } from '../components/ParameterTools';
-import MapView from '../components/MapView';
-import RightStatsPanel from '../components/RightStatsPanel';   
+import { ParameterTools } from '../components/ParameterTools'; 
 import { HamburgerButton } from '../components/HamburgerButton';
 import LanguageSwitcher from '../components/LanguageSwitcher';
 import SMSNotifications from '../components/SMSNotifications';
@@ -11,38 +12,70 @@ import SMSNotifications from '../components/SMSNotifications';
 const HomePage = () => {
   const { t } = useTranslation();
   const [toolsVisible, setToolsVisible] = useState(true);
+  const [routeStatus, setRouteStatus] = useState("idle");
+  const [routeControls, setRouteControls] = useState<RouteControls>({
+    clearMarkers: () => {},
+    hasMarkers: false,
+  });
 
   const toggleToolsVisibility = () => {
     setToolsVisible((prev) => !prev);
   };
 
+  const handleRouteControlsChange = useCallback((controls: RouteControls) => {
+    setRouteControls((prev) => {
+      if (prev.clearMarkers === controls.clearMarkers && prev.hasMarkers === controls.hasMarkers) {
+        return prev;
+      }
+      return controls;
+    });
+  }, []);
+
   const cardsClassName = toolsVisible
     ? "tool-bar__cards"
     : "tool-bar__cards tool-bar__cards--hidden";
+
+  const routeStatusLabel =
+    routeStatus === "requesting"
+      ? "Calculating route..."
+      : routeControls.hasMarkers
+      ? "Pins ready. Start animation on map."
+      : "Tap the map twice to set route pins.";
 
   return (
     <div className="app-shell">
       <SMSNotifications />
       <div className="map-frame">
         <div className="tool-bar">
-          <HamburgerButton
-            expanded={toolsVisible}
-            onToggle={toggleToolsVisibility}
-            controlsId="mission-tools-panel"
-          />
+          <HamburgerButton expanded={toolsVisible} onToggle={toggleToolsVisibility} />
 
           <div id="mission-tools-panel" className={cardsClassName}>
             <LanguageSwitcher />
             <Calendar />
             <ParameterTools message={t('tools.startPoint')} />
             <ParameterTools message={t('tools.destination')} />
+            <div className="tool-card tool-card--stacked tool-card--route">
+              <h3>Route Tools</h3>
+              <button
+                type="button"
+                onClick={routeControls.clearMarkers}
+                disabled={!routeControls.hasMarkers || routeStatus === "requesting"}
+              >
+                Clear pins
+              </button>
+              <span className="animated-route-status">{routeStatusLabel}</span>
+            </div>
           </div>
         </div>
-        <MapView />
+
+        <MapView
+          onRouteStatusChange={setRouteStatus}
+          onRouteControlsChange={handleRouteControlsChange}
+        />
       </div>
       <RightStatsPanel />
     </div>
   );
-}
+};
 
 export default HomePage;

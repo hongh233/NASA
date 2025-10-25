@@ -4,7 +4,7 @@ type HamburgerButtonProps = {
     controlsId?: string;
 };
 
-export const HamburgerButton = ({expanded, onToggle, controlsId}: HamburgerButtonProps) => {
+export const HamburgerButton = ({expanded, onToggle, controlsId = "mission-tools-panel"}: HamburgerButtonProps) => {
     const label = expanded ? "Hide mission tools" : "Show mission tools";
 
     return (
