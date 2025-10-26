@@ -9,9 +9,10 @@ import "./MapView.css";
 type MapViewProps = {
   onRouteStatusChange?: (status: string) => void;
   onRouteControlsChange?: (controls: RouteControls) => void;
+  predictedData?: GeoJSON.FeatureCollection | null;
 };
 
-const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) => {
+const MapView = ({ onRouteStatusChange, onRouteControlsChange, predictedData }: MapViewProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -80,6 +81,37 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) =
       },
     });
   }, [iceData, isMapLoaded]);
+
+  // Update predicted data on the map (separate layer)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isMapLoaded) return;
+
+    if (map.getLayer("predictedIce-fill")) {
+      map.removeLayer("predictedIce-fill");
+    }
+    if (map.getSource("predictedIce")) {
+      map.removeSource("predictedIce");
+    }
+
+    if (!predictedData) return;
+
+    map.addSource("predictedIce", {
+      type: "geojson",
+      data: predictedData,
+    });
+
+    map.addLayer({
+      id: "predictedIce-fill",
+      type: "circle",
+      source: "predictedIce",
+      paint: {
+        "circle-radius": 3,
+        "circle-color": "#4bd7ff",
+        "circle-opacity": 0.9,
+      },
+    });
+  }, [predictedData, isMapLoaded]);
 
   return (
     <div className="map-container">

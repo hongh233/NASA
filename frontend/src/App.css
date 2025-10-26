@@ -26,10 +26,10 @@
   top: 16px;
   left: 16px;
   display: flex;
-  align-items: stretch;
-  gap: 12px;
-  max-width: calc(100vw - 380px);
-  flex-wrap: wrap;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: calc(100vw - 200px);
+  flex-wrap: nowrap; /* keep cards side-by-side */
   z-index: 10;
   pointer-events: none;
 }
@@ -118,32 +118,33 @@
 
 .tool-card {
   pointer-events: auto;
-  width: clamp(180px, 18vw, 220px);
-  height: 100%;
+  width: clamp(160px, 18vw, 220px);
+  height: auto;
   box-sizing: border-box;
-  min-height: 88px;
-  padding: 0.65rem 0.85rem;
+  min-height: 72px;
+  padding: 0.6rem 0.9rem;
   border-radius: 12px;
-  background: rgba(10, 18, 40, 0.1);
-  border: 1px solid rgba(112, 144, 255, 0.18);
-  box-shadow: 0 8px 20px rgba(2, 8, 28, 0.25);
+  background: rgba(10, 18, 40, 0.08);
+  border: 1px solid rgba(112, 144, 255, 0.14);
+  box-shadow: 0 6px 12px rgba(2, 8, 28, 0.18);
   color: #f4f7ff;
+  font-size: 0.95rem;
 }
 
 .tool-card h3 {
   margin: 0;
-  font-size: 0.95rem;
+  font-size: 0.85rem;
   font-weight: 600;
   letter-spacing: 0.02em;
 }
 
 .tool-card button {
-  background: rgba(98, 134, 255, 0.3);
+  background: rgba(98, 134, 255, 0.28);
   color: #f4f7ff;
   border: none;
   border-radius: 8px;
-  padding: 0.45rem 0.75rem;
-  font-size: 0.9rem;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
   cursor: pointer;
   transition: background 0.2s ease;
 }
@@ -156,10 +157,9 @@
   display: flex;
   flex-direction: column;
   justify-content: center;
-  align-items: stretch;
-  gap: 0.5rem;
+  align-items: stretch; /* left-align inputs/buttons */
+  gap: 0.35rem;
   text-align: left;
-  text-align: center;
 }
 
 .tool-card--stacked button {
@@ -237,14 +237,28 @@
 .calendar-vertical {
   position: absolute;
   left: 8px;
-  top: 64px; /* keep clear of top bar */
+  top: 96px; /* keep clear of the top-left toolbar */
   bottom: 16px;
-  width: 56px;
+  width: 48px;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 6px;
   pointer-events: auto;
+}
+
+@media (max-width: 720px) {
+  /* On narrow screens stack toolbar vertically to avoid overflow */
+  .tool-bar {
+    left: 8px;
+    top: 8px;
+    flex-direction: column;
+    gap: 8px;
+    max-width: calc(100vw - 16px);
+  }
+  .tool-card {
+    width: calc(100vw - 32px);
+  }
 }
 
 .calendar-vertical__slider {
