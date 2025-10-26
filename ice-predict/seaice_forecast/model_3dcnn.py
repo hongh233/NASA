@@ -11,6 +11,7 @@ class SeaIce3DCNN(nn.Module):
             nn.Conv3d(16, 32, kernel_size=(3,3,3), padding=1),
             nn.BatchNorm3d(32),
             nn.ReLU(),
+            nn.Dropout3d(0.2),
         )
         self.decoder = nn.Sequential(
             nn.Conv3d(32, 16, kernel_size=(3,3,3), padding=1),
