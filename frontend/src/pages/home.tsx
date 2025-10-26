@@ -90,7 +90,7 @@ const HomePage = () => {
                     setPredictError(null);
                     try {
                       const result = await predictIceExtent(predictDate, predictRadius, predictThresh);
-                      setPredictedData(result);
+                      setPredictedData(result.feature_collection);
                     } catch (err: any) {
                       setPredictError(err?.message ?? String(err));
                       setPredictedData(null);

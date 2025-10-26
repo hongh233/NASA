@@ -42,3 +42,9 @@ export interface PredictionRequest {
   end: Position;
 }
 
+export type IcePredictionResponse = {
+  date: string;
+  radius_km: number;
+  threshold: number;
+  feature_collection: FeatureCollection;
+};
