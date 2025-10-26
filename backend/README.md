@@ -1,136 +1,78 @@
-# NASA Arctic SMS Service
+# NASA Ice Backend
 
-A Python Flask backend service that provides SMS notifications for Arctic ice data updates using Twilio.
+Light-weight FastAPI service that exposes two endpoints used by the frontend
+under the `/api` prefix:
 
-## Features
+- `GET /api/ice_extent` – converts GeoTIFF sea-ice rasters into GeoJSON
+- `POST /api/route_prediction` – placeholder that returns a straight line between two coordinates
 
-- ✅ Send SMS notifications using Twilio
-- ✅ Support for English and French languages
-- ✅ Subscriber management (subscribe/unsubscribe)
-- ✅ Broadcast updates to all subscribers
-- ✅ **Calendar-based scheduling** for future SMS delivery
-- ✅ **Personal and broadcast scheduling** with different message types
-- ✅ **Background scheduler** with automatic message delivery
-- ✅ RESTful API endpoints
-- ✅ Dummy data for testing
+## Quick start
 
-## Setup
+```bash
+python3 -m venv .venv
+. .venv/bin/activate
+pip install -r requirements.txt
+cp .env.example .env  # customise host/port or dataset path as needed
+python app.py
+```
 
-1. **Install Python dependencies:**
-   ```bash
-   cd backend
-   pip install -r requirements.txt
-   ```
+## Datasets
 
-2. **Configure environment variables:**
-   - Copy `.env.example` to `.env`
-   - Update the Twilio credentials if needed (currently using provided test credentials)
+Place raw GeoTIFF files below `backend/datasets/`.  The filename should contain
+the acquisition date in `YYYYMMDD` form (e.g. `N_19781026_extent_v4.0.tif`).
+You can configure an alternate root via the `ICE_DATASET_DIR` environment
+variable set in `.env`.
 
-3. **Run the service:**
-   ```bash
-   python sms_service.py
-   ```
+## Configuration
 
-   The service will start on `http://localhost:5000`
+The server reads settings from environment variables (loaded via `.env`):
 
-## API Endpoints
+- `BACKEND_HOST` / `BACKEND_PORT` control the uvicorn bind address (defaults to `0.0.0.0:5000`).
+- `API_PREFIX` allows changing the routing prefix (defaults to `/api`).
+- `ICE_DATASET_DIR` overrides the GeoTIFF dataset directory if you keep files elsewhere.
 
-### Health Check
-- **GET** `/health` - Check if the service is running
+Copy `.env.example` to `.env` and tweak values before launching the server if you need
+non-default settings.
 
-### SMS Operations
-- **POST** `/sms/send` - Send SMS to a specific phone number
-  ```json
-  {
-    "phone": "+1234567890",
-    "message": "Your message here",
-    "language": "en" // or "fr"
-  }
-  ```
+## `/ice_extent`
 
-- **POST** `/sms/subscribe` - Subscribe to SMS updates
-  ```json
-  {
-    "phone": "+1234567890",
-    "language": "en" // or "fr"
-  }
-  ```
+Converts a single raster into a GeoJSON FeatureCollection using `rasterio` and
+`geopandas`.  Query parameters:
 
-- **POST** `/sms/unsubscribe` - Unsubscribe from SMS updates
-  ```json
-  {
-    "phone": "+1234567890"
-  }
-  ```
+- `date` (required) – formatted as `YYYY-MM-DD`
+- `radius_km` (optional) – defaults to `500`, controls the radial mask used when
+  selecting ice pixels
 
-- **GET** `/sms/subscribers` - Get list of all active subscribers
+Example:
 
-- **POST** `/sms/broadcast` - Send Arctic update to all subscribers
-  ```json
-  {
-    "type": "ice_loss", // or "temperature", "general"
-    "language": "en" // or "fr"
-  }
-  ```
+```
+GET /api/ice_extent?date=1978-10-26&radius_km=400
+```
 
-- **POST** `/sms/test` - Test SMS functionality (uses dummy phone number)
+The response includes the GeoJSON features plus metadata about the source file:
 
-### Scheduling Operations
-- **POST** `/sms/schedule` - Schedule an SMS message for future delivery
-  ```json
-  {
-    "phone": "+1234567890",
-    "message": "Your scheduled message",
-    "scheduled_time": "2025-10-26T15:30:00.000Z",
-    "language": "en", // or "fr"
-    "type": "custom" // or "arctic_ice_loss", etc.
-  }
-  ```
+```json
+{
+  "date": "1978-10-26",
+  "feature_collection": { "...": "..." },
+  "radius_km": 400.0,
+  "source": "/absolute/path/to/datasets/1978/10_Oct/N_19781026_extent_v4.0.tif"
+}
+```
 
-- **GET** `/sms/scheduled` - Get all scheduled messages
-  - Optional query param: `?phone=+1234567890` to filter by phone number
+Results are cached in-memory keyed by file path and radius for faster repeated
+requests.
 
-- **DELETE** `/sms/scheduled/{message_id}` - Cancel a scheduled message
+## `/route_prediction`
 
-- **POST** `/sms/schedule/arctic` - Schedule Arctic update for all subscribers
-  ```json
-  {
-    "scheduled_time": "2025-10-26T15:30:00.000Z",
-    "type": "ice_loss", // or "temperature", "general"
-    "language": "en" // or "fr"
-  }
-  ```
+Accepts JSON payload:
 
-## Twilio Configuration
+```json
+{
+  "start": [-93.0, 60.0],
+  "end": [-90.0, 65.0]
+}
+```
 
-The service uses your Twilio credentials (configured in .env file):
-- **Account SID:** `your_twilio_account_sid_here`
-- **Auth Token:** `your_twilio_auth_token_here`
-- **From Phone:** `+1234567890`
-
-## Language Support
-
-The service supports bilingual SMS messages:
-- **English (en):** Default language with standard messaging
-- **French (fr):** Includes "VIVE LE QUEBEC LIBRE!" and French translations
-
-## Scheduling System
-
-The backend includes a **background scheduler** that automatically sends messages at their scheduled times:
-- **Automatic delivery:** Messages are checked every 30 seconds and sent when their time arrives
-- **Status tracking:** Messages have statuses: `scheduled`, `sent`, `failed`, `cancelled`
-- **Personal scheduling:** Individual users can schedule custom messages
-- **Broadcast scheduling:** Admins can schedule Arctic updates for all subscribers
-- **Time validation:** Scheduled times must be in the future
-- **Multi-language support:** Scheduled messages respect each subscriber's language preference
-
-## Testing
-
-To test the SMS functionality:
-1. Update the `test_phone` number in the `/sms/test` endpoint
-2. Make a POST request to `/sms/test`
-3. Check your phone for the test message
-
-## Integration with Frontend
-
-This backend service is designed to work with the NASA Arctic frontend application, providing SMS notifications when Arctic ice data is updated.
+and returns a stubbed `LineString` FeatureCollection.  Swap the implementation
+with the ML-generated routes when they are available.

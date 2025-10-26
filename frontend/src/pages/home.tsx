@@ -10,17 +10,11 @@ import LanguageSwitcher from '../components/LanguageSwitcher';
 import SMSNotifications from '../components/SMSNotifications';
 
 const HomePage = () => {
-  const { t } = useTranslation();
-  const [toolsVisible, setToolsVisible] = useState(true);
   const [routeStatus, setRouteStatus] = useState("idle");
   const [routeControls, setRouteControls] = useState<RouteControls>({
     clearMarkers: () => {},
     hasMarkers: false,
   });
-
-  const toggleToolsVisibility = () => {
-    setToolsVisible((prev) => !prev);
-  };
 
   const handleRouteControlsChange = useCallback((controls: RouteControls) => {
     setRouteControls((prev) => {
@@ -30,10 +24,6 @@ const HomePage = () => {
       return controls;
     });
   }, []);
-
-  const cardsClassName = toolsVisible
-    ? "tool-bar__cards"
-    : "tool-bar__cards tool-bar__cards--hidden";
 
   const routeStatusLabel =
     routeStatus === "requesting"
@@ -47,13 +37,7 @@ const HomePage = () => {
       <SMSNotifications />
       <div className="map-frame">
         <div className="tool-bar">
-          <HamburgerButton expanded={toolsVisible} onToggle={toggleToolsVisibility} />
-
-          <div id="mission-tools-panel" className={cardsClassName}>
-            <LanguageSwitcher />
-            <Calendar />
-            <ParameterTools message={t('tools.startPoint')} />
-            <ParameterTools message={t('tools.destination')} />
+          <div id="mission-tools-panel">
             <div className="tool-card tool-card--stacked tool-card--route">
               <h3>Route Tools</h3>
               <button
@@ -67,6 +51,9 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
+        {/* Persistent vertical date slider, independent of the tool bar */}
+        <Calendar />
 
         <MapView
           onRouteStatusChange={setRouteStatus}
