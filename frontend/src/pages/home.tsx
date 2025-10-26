@@ -120,7 +120,7 @@ const HomePage = () => {
           predictedData={predictedData}
         />
       </div>
-      <RightStatsPanel />
+      <RightStatsPanel predictedData={predictedData} />
     </div>
   );
 };

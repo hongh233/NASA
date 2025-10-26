@@ -51,7 +51,7 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange, predictedData }: 
     };
   }, [accessToken]);
 
-  // Update ice extent data on the map
+  // Update ice extent data on the map, hide it when predictions are visible
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !isMapLoaded || !iceData) return;
@@ -63,6 +63,8 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange, predictedData }: 
     if (map.getSource("iceLoss")) {
       map.removeSource("iceLoss");
     }
+
+    if (predictedData) return;
 
     // Add new source and layer
     map.addSource("iceLoss", {
@@ -80,7 +82,7 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange, predictedData }: 
         "circle-opacity": 0.7,
       },
     });
-  }, [iceData, isMapLoaded]);
+  }, [iceData, isMapLoaded, predictedData]);
 
   // Update predicted data on the map (separate layer)
   useEffect(() => {
