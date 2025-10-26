@@ -56,10 +56,8 @@ const EMPTY_COLLECTION: FeatureCollection = {
 };
 
 export const IceExtentProvider = ({ children }: { children: ReactNode }) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(() => {
-    const today = new Date();
-    return new Date(Date.UTC(today.getUTCFullYear(), today.getUTCMonth(), today.getUTCDate()));
-  });
+  // Use a default date that will be updated once we have available dates
+  const [selectedDate, setSelectedDate] = useState<Date>(() => new Date(Date.UTC(2000, 0, 1)));
   const [data, setData] = useState<FeatureCollection | null>(null);
   const [availableDates, setAvailableDates] = useState<string[]>([]);
   const [metadata, setMetadata] = useState<Omit<IceExtentResponse, "feature_collection"> | null>(null);
@@ -83,12 +81,10 @@ export const IceExtentProvider = ({ children }: { children: ReactNode }) => {
         if (!isActive) return;
         setAvailableDates(list);
         if (list.length > 0) {
-          const currentIso = isoFromDate(selectedDate);
-          if (!list.includes(currentIso)) {
-            const nearest = list.find((d) => d >= currentIso) ?? list[list.length - 1];
-            const dt = dateFromIso(nearest);
-            if (dt) setSelectedDate(dt);
-          }
+          // Always select the latest available date
+          const latestDate = list[list.length - 1];
+          const dt = dateFromIso(latestDate);
+          if (dt) setSelectedDate(dt);
         }
       })
       .catch(() => setAvailableDates([]));
@@ -99,16 +95,25 @@ export const IceExtentProvider = ({ children }: { children: ReactNode }) => {
     setReloadToken((token) => token + 1);
   }, []);
 
-  // Ensure year cache only when year changes and exists
+  // Ensure year cache only when year changes and data exists for that year
   useEffect(() => {
     const year = selectedDate.getUTCFullYear();
-    if (!availableDates.some((d) => d.startsWith(String(year)))) return;
+    const hasDataForYear = availableDates.some((d) => d.startsWith(String(year)));
+    
+    // Skip if no data exists for this year
+    if (!hasDataForYear) {
+      yearFailedRef.add(year);
+      return;
+    }
+    
+    // Skip if we already have the data or are fetching it
     if (yearCacheRef.has(year) || yearInFlightRef.has(year) || yearFailedRef.has(year)) return;
+    
     yearInFlightRef.add(year);
     fetchYear(year)
       .then((resp) => {
         const map = new Map<string, FeatureCollection>();
-        resp.days.forEach((d) => map.set(d.date, d.feature_collection));
+        resp.days.forEach((day) => map.set(day.date, day.feature_collection));
         yearCacheRef.set(year, map);
       })
       .catch((err: any) => {

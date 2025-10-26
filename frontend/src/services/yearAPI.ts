@@ -12,7 +12,12 @@ export type YearResponse = {
 };
 
 export const fetchYear = async (year: number, radiusKm = 500): Promise<YearResponse> => {
-  const res = await api.get<YearResponse>("/ice_extent/by_year", { params: { year, radius_km: radiusKm } });
+  const res = await api.get<YearResponse>("/ice_extent/by_year", { 
+    params: { 
+      year, 
+      radius_km: radiusKm 
+    } 
+  });
   return res.data;
 };
 
