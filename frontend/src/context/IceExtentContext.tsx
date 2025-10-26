@@ -10,21 +10,8 @@ import {
 import type { FeatureCollection } from "geojson";
 import { fetchIceExtentCoordinates } from "../services/iceExtentAPI";
 import { fetchAvailableDates } from "../services/availabilityAPI";
-import { fetchYear } from "../services/yearAPI";
 import type { IceExtentResponse } from "../types";
-
-type IceExtentContextValue = {
-  selectedDate: Date;
-  isoDate: string;
-  availableDates: string[];
-  data: FeatureCollection | null;
-  metadata: Omit<IceExtentResponse, "feature_collection"> | null;
-  isLoading: boolean;
-  error?: string;
-  shiftDate: (days: number) => void;
-  setDateFromIso: (isoDate: string) => void;
-  refetch: () => void;
-};
+import type { IceExtentContextValue } from "../types";
 
 const IceExtentContext = createContext<IceExtentContextValue | undefined>(undefined);
 
@@ -64,12 +51,6 @@ export const IceExtentProvider = ({ children }: { children: ReactNode }) => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string>();
   const [reloadToken, setReloadToken] = useState(0);
-  const yearCacheRef = ((globalThis as any).__ICE_YEAR_CACHE__ ?? new Map<number, Map<string, FeatureCollection>>()) as Map<number, Map<string, FeatureCollection>>;
-  const yearInFlightRef = ((globalThis as any).__ICE_YEAR_INFLIGHT__ ?? new Set<number>()) as Set<number>;
-  const yearFailedRef = ((globalThis as any).__ICE_YEAR_FAILED__ ?? new Set<number>()) as Set<number>;
-  (globalThis as any).__ICE_YEAR_CACHE__ = yearCacheRef;
-  (globalThis as any).__ICE_YEAR_INFLIGHT__ = yearInFlightRef;
-  (globalThis as any).__ICE_YEAR_FAILED__ = yearFailedRef;
 
   const isoDate = useMemo(() => isoFromDate(selectedDate), [selectedDate]);
 
@@ -95,53 +76,10 @@ export const IceExtentProvider = ({ children }: { children: ReactNode }) => {
     setReloadToken((token) => token + 1);
   }, []);
 
-  // Ensure year cache only when year changes and data exists for that year
-  useEffect(() => {
-    const year = selectedDate.getUTCFullYear();
-    const hasDataForYear = availableDates.some((d) => d.startsWith(String(year)));
-    
-    // Skip if no data exists for this year
-    if (!hasDataForYear) {
-      yearFailedRef.add(year);
-      return;
-    }
-    
-    // Skip if we already have the data or are fetching it
-    if (yearCacheRef.has(year) || yearInFlightRef.has(year) || yearFailedRef.has(year)) return;
-    
-    yearInFlightRef.add(year);
-    fetchYear(year)
-      .then((resp) => {
-        const map = new Map<string, FeatureCollection>();
-        resp.days.forEach((day) => map.set(day.date, day.feature_collection));
-        yearCacheRef.set(year, map);
-      })
-      .catch((err: any) => {
-        if (err?.response?.status === 404) yearFailedRef.add(year);
-      })
-      .finally(() => {
-        yearInFlightRef.delete(year);
-      });
-  }, [availableDates, selectedDate]);
-
   useEffect(() => {
     let isActive = true;
     setIsLoading(true);
     setError(undefined);
-
-    const year = selectedDate.getUTCFullYear();
-    const cached = yearCacheRef.get(year)?.get(isoDate);
-    if (cached) {
-      setData(cached);
-      setMetadata({ date: isoDate, source: "cache", radius_km: 500 });
-      setIsLoading(false);
-      return () => { isActive = false; };
-    }
-
-    if (yearInFlightRef.has(year)) {
-      setIsLoading(false);
-      return () => { isActive = false; };
-    }
 
     fetchIceExtentCoordinates(isoDate)
       .then((response) => {

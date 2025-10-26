@@ -1,6 +1,20 @@
 // API Response types for fetch, Request, and Response
 import type { Position, FeatureCollection } from "geojson";
 
+export type IceExtentContextValue = {
+  selectedDate: Date;
+  isoDate: string;
+  availableDates: string[];
+  data: FeatureCollection | null;
+  metadata: Omit<IceExtentResponse, "feature_collection"> | null;
+  isLoading: boolean;
+  error?: string;
+  shiftDate: (days: number) => void;
+  setDateFromIso: (isoDate: string) => void;
+  refetch: () => void;
+};
+
+
 export type IceExtentResponse = {
   date: string;
   source: string;

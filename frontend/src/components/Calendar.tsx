@@ -15,17 +15,29 @@ export const Calendar = () => {
   const sliderIndex = useMemo(() => Math.max(0, list.indexOf(isoDate)), [list, isoDate]);
 
   const [isSliding, setIsSliding] = useState(false);
+  const [pendingIndex, setPendingIndex] = useState<number | null>(null);
+
+  const commitPendingIndex = useCallback(() => {
+    setIsSliding(false);
+    setPendingIndex((idx) => {
+      if (idx === null) return null;
+      const iso = list[Math.min(Math.max(idx, 0), max)];
+      if (iso && iso !== isoDate) {
+        setDateFromIso(iso);
+      }
+      return null;
+    });
+  }, [isoDate, list, max, setDateFromIso]);
 
   const handleStart = useCallback(() => setIsSliding(true), []);
-  const handleEnd = useCallback(() => setIsSliding(false), []);
+  const handleEnd = useCallback(() => {
+    commitPendingIndex();
+  }, [commitPendingIndex]);
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     const idx = Math.min(Math.max(0, Number(e.target.value)), list.length - 1);
-    const nextIso = list[idx];
-    if (nextIso && nextIso !== isoDate) {
-      setDateFromIso(nextIso);
-    }
-  }, [list, setDateFromIso, isoDate]);
+    setPendingIndex(idx);
+  }, [list.length]);
 
   const formatDateOnly = (d?: Date | null) => {
     if (!d) return "";
@@ -36,7 +48,8 @@ export const Calendar = () => {
   };
 
   // Calculate bubble position as percent across the track
-  const percent = max > 0 ? (sliderIndex / max) * 100 : 0;
+  const activeIndex = pendingIndex ?? sliderIndex;
+  const percent = max > 0 ? (activeIndex / max) * 100 : 0;
   const bubbleRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
@@ -44,6 +57,16 @@ export const Calendar = () => {
       bubbleRef.current.style.left = `${percent}%`;
     }
   }, [percent]);
+
+  const bubbleDate = useMemo(() => {
+    if (pendingIndex !== null) {
+      const iso = list[Math.min(Math.max(pendingIndex, 0), max)];
+      if (iso) {
+        return new Date(`${iso}T00:00:00Z`);
+      }
+    }
+    return selectedDate;
+  }, [list, max, pendingIndex, selectedDate]);
 
   return (
     <div className="calendar-horizontal">
@@ -63,7 +86,7 @@ export const Calendar = () => {
           {isSliding || isLoading ? (
             <div className="calendar-horizontal__bubble-inner">
               <span className="calendar-horizontal__spinner" aria-hidden />
-              <span className="calendar-horizontal__bubble-text">{formatDateOnly(selectedDate)}</span>
+              <span className="calendar-horizontal__bubble-text">{formatDateOnly(bubbleDate)}</span>
             </div>
           ) : null}
         </div>
@@ -76,12 +99,16 @@ export const Calendar = () => {
           min={0}
           max={max}
           step={1}
-          value={sliderIndex}
+          value={Math.min(Math.max(activeIndex, 0), max)}
           onChange={handleChange}
           onMouseDown={handleStart}
           onTouchStart={handleStart}
           onMouseUp={handleEnd}
           onTouchEnd={handleEnd}
+          onTouchCancel={handleEnd}
+          onKeyDown={handleStart}
+          onKeyUp={handleEnd}
+          onBlur={handleEnd}
           disabled={list.length === 0}
         />
       </div>
