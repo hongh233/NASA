@@ -1,8 +1,11 @@
 import "./App.css";
 import HomePage from "./pages/home";
+import { IceExtentProvider } from "./context/IceExtentContext";
 
 const App = () => (
-  <HomePage/>
+  <IceExtentProvider>
+    <HomePage />
+  </IceExtentProvider>
 );
 
 export default App;

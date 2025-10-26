@@ -214,6 +214,13 @@
   box-shadow: 0 0 0 2px rgba(82, 120, 255, 0.25);
 }
 
+.calendar-error {
+  display: block;
+  margin-top: 0.35rem;
+  font-size: 0.75rem;
+  color: #ff8585;
+}
+
 .calendar-quick-jump__submit {
   position: absolute;
   width: 0;
@@ -238,6 +245,36 @@
 .map-canvas {
   width: 100%;
   height: 100%;
+}
+
+.map-status-banner {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  max-width: clamp(220px, 32vw, 360px);
+  padding: 0.6rem 0.85rem;
+  border-radius: 10px;
+  background: rgba(17, 30, 60, 0.85);
+  border: 1px solid rgba(140, 170, 255, 0.45);
+  color: #f4f7ff;
+  font-size: 0.82rem;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.map-error-banner {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  max-width: clamp(220px, 32vw, 360px);
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  background: rgba(180, 48, 61, 0.85);
+  border: 1px solid rgba(255, 139, 149, 0.65);
+  color: #fff5f6;
+  font-size: 0.82rem;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
 }
 
 .animated-route-toolbar {

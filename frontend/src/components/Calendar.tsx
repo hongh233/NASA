@@ -1,23 +1,13 @@
-import {useEffect, useRef, useState} from "react";
-import type {FormEvent, PointerEventHandler} from "react";
+import { useEffect, useRef, useState } from "react";
+import type { FormEvent, PointerEventHandler } from "react";
+import { useIceExtentContext } from "../context/IceExtentContext";
 
 export const Calendar = () => {
+    const { selectedDate, isoDate, shiftDate, setDateFromIso, isLoading, error } = useIceExtentContext();
 
-    // calendar date
-    const [date, setDate] = useState((new Date()));
-
-    // calendar is open?
     const [isOpen, setIsOpen] = useState(false);
     const [monthInput, setMonthInput] = useState("");
     const [yearInput, setYearInput] = useState("");
-
-    const adjustDate = (offset: number) => {
-        setDate((prevDate) => {
-            const updated = new Date(prevDate);
-            updated.setDate(prevDate.getDate() + offset);
-            return updated;
-        });
-    };
 
     const repeatIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
     const suppressClickRef = useRef(false);
@@ -44,11 +34,12 @@ export const Calendar = () => {
     useEffect(() => () => clearRepeat(), []);
 
     const createPointerDownHandler = (direction: number): PointerEventHandler<HTMLButtonElement> => (event) => {
+        if (isLoading) return;
         suppressClickRef.current = true;
         event.currentTarget.setPointerCapture(event.pointerId);
-        adjustDate(direction);
+        shiftDate(direction);
         clearRepeat();
-        repeatIntervalRef.current = setInterval(() => adjustDate(direction), 150);
+        repeatIntervalRef.current = setInterval(() => shiftDate(direction), 150);
     };
 
     const handlePointerEnd: PointerEventHandler<HTMLButtonElement> = (event) => {
@@ -59,11 +50,12 @@ export const Calendar = () => {
     };
 
     const createClickHandler = (direction: number) => () => {
+        if (isLoading) return;
         if (suppressClickRef.current) {
             suppressClickRef.current = false;
             return;
         }
-        adjustDate(direction);
+        shiftDate(direction);
     };
 
     // toggle calendar visibility
@@ -73,9 +65,9 @@ export const Calendar = () => {
             return;
         }
 
-        const current = date;
-        setMonthInput(String(current.getMonth() + 1).padStart(2, "0"));
-        setYearInput(String(current.getFullYear()));
+        const current = selectedDate;
+        setMonthInput(String(current.getUTCMonth() + 1).padStart(2, "0"));
+        setYearInput(String(current.getUTCFullYear()));
         setIsOpen(true);
     };
 
@@ -93,17 +85,17 @@ export const Calendar = () => {
             return;
         }
 
-        const next = new Date(date);
-        next.setFullYear(yearValue);
-        next.setMonth(monthValue - 1, 1);
-        next.setHours(0, 0, 0, 0);
-
-        setDate(next);
+        const iso = `${String(yearValue).padStart(4, "0")}-${String(monthValue).padStart(2, "0")}-01`;
+        setDateFromIso(iso);
         setIsOpen(false);
     };
 
-    // format date (YYYY - MM - DD)
-    const formatDate = (d: Date) => d.toISOString().split("T")[0];
+    useEffect(() => {
+        if (!isOpen) return;
+        const [year, month] = isoDate.split("-");
+        setYearInput(year);
+        setMonthInput(month);
+    }, [isoDate, isOpen]);
 
     let label;
     if(isOpen){
@@ -122,15 +114,18 @@ export const Calendar = () => {
                 onPointerUp={handlePointerEnd}
                 onPointerLeave={handlePointerEnd}
                 onPointerCancel={handlePointerEnd}
+                disabled={isLoading}
             >↑</button>
-            <span>{formatDate(date)}</span>
+            <span>{isoDate}</span>
             <button
                 onClick={createClickHandler(1)}
                 onPointerDown={createPointerDownHandler(1)}
                 onPointerUp={handlePointerEnd}
                 onPointerLeave={handlePointerEnd}
                 onPointerCancel={handlePointerEnd}
+                disabled={isLoading}
             >↓</button>
+            {error && <span className="calendar-error">{error}</span>}
             {isOpen && (
                 <form className="calendar-quick-jump" onSubmit={handleJumpSubmit}>
                     <label className="calendar-quick-jump__field">
