@@ -32,7 +32,7 @@ def main():
             torch.save(model.state_dict(), ckpt_path)
             print(f"💾 Saved checkpoint: {ckpt_path}")
 
-    print(f"✅ Training complete. Final model saved in {CHECKPOINT_DIR}")
+    print(f"Training complete. Final model saved in {CHECKPOINT_DIR}")
 
 if __name__ == "__main__":
     main()
