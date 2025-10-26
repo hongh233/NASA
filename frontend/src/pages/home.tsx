@@ -2,20 +2,14 @@ import { useCallback, useState } from "react";
 import { Calendar } from "../components/Calendar";
 import MapView from "../components/MapView";
 import RightStatsPanel from "../components/RightStatsPanel";
-import { HamburgerButton } from "../components/HamburgerButton";
 import type { RouteControls } from "../components/routePredictions/AnimatedRouteOverlay";
 
 const HomePage = () => {
-  const [toolsVisible, setToolsVisible] = useState(true);
   const [routeStatus, setRouteStatus] = useState("idle");
   const [routeControls, setRouteControls] = useState<RouteControls>({
     clearMarkers: () => {},
     hasMarkers: false,
   });
-
-  const toggleToolsVisibility = () => {
-    setToolsVisible((prev) => !prev);
-  };
 
   const handleRouteControlsChange = useCallback((controls: RouteControls) => {
     setRouteControls((prev) => {
@@ -25,10 +19,6 @@ const HomePage = () => {
       return controls;
     });
   }, []);
-
-  const cardsClassName = toolsVisible
-    ? "tool-bar__cards"
-    : "tool-bar__cards tool-bar__cards--hidden";
 
   const routeStatusLabel =
     routeStatus === "requesting"
@@ -41,10 +31,7 @@ const HomePage = () => {
     <div className="app-shell">
       <div className="map-frame">
         <div className="tool-bar">
-          <HamburgerButton expanded={toolsVisible} onToggle={toggleToolsVisibility} />
-
-          <div id="mission-tools-panel" className={cardsClassName}>
-            <Calendar />
+          <div id="mission-tools-panel">
             <div className="tool-card tool-card--stacked tool-card--route">
               <h3>Route Tools</h3>
               <button
@@ -58,6 +45,9 @@ const HomePage = () => {
             </div>
           </div>
         </div>
+
+        {/* Persistent vertical date slider, independent of the tool bar */}
+        <Calendar />
 
         <MapView
           onRouteStatusChange={setRouteStatus}
