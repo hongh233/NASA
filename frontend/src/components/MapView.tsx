@@ -4,6 +4,7 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import parsedEnv from "../config/env";
 import { useIceExtentContext } from "../context/IceExtentContext";
 import AnimatedRouteOverlay, { type RouteControls } from "./routePredictions/AnimatedRouteOverlay";
+import "./MapView.css";
 
 type MapViewProps = {
   onRouteStatusChange?: (status: string) => void;
@@ -14,7 +15,7 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) =
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const { data: iceData } = useIceExtentContext();
+  const { data: iceData, isLoading } = useIceExtentContext();
   const accessToken = parsedEnv.VITE_MAPBOX_TOKEN;
 
   // Initialize the map
@@ -83,6 +84,12 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) =
   return (
     <div className="map-container">
       <div ref={mapContainer} className="map-canvas" />
+      {isLoading ? (
+        <div className="map-loading-overlay" role="status" aria-live="polite">
+          <div className="map-loading-spinner" />
+          <div className="map-loading-text">Loading data…</div>
+        </div>
+      ) : null}
       <AnimatedRouteOverlay
         map={mapRef.current}
         isMapLoaded={isMapLoaded}
