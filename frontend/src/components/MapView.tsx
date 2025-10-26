@@ -2,10 +2,15 @@ import { useEffect, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import parsedEnv from "../config/env";
-import AnimatedRouteOverlay from "./routePredictions/AnimatedRouteOverlay";
 import { useIceExtentContext } from "../context/IceExtentContext";
+import AnimatedRouteOverlay, { type RouteControls } from "./routePredictions/AnimatedRouteOverlay";
 
-const MapView = () => {
+type MapViewProps = {
+  onRouteStatusChange?: (status: string) => void;
+  onRouteControlsChange?: (controls: RouteControls) => void;
+};
+
+const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -78,7 +83,12 @@ const MapView = () => {
   return (
     <div className="map-container">
       <div ref={mapContainer} className="map-canvas" />
-      <AnimatedRouteOverlay map={mapRef.current} isMapLoaded={isMapLoaded} />
+      <AnimatedRouteOverlay
+        map={mapRef.current}
+        isMapLoaded={isMapLoaded}
+        onStatusChange={onRouteStatusChange}
+        onControlsChange={onRouteControlsChange}
+      />
     </div>
   );
 };

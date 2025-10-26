@@ -3,9 +3,16 @@ import mapboxgl from "mapbox-gl";
 import type { FeatureCollection, Position } from "geojson";
 import api from "../../api/mapAPI";
 
+export type RouteControls = {
+  clearMarkers: () => void;
+  hasMarkers: boolean;
+};
+
 type AnimatedRouteOverlayProps = {
   map: mapboxgl.Map | null;
   isMapLoaded: boolean;
+  onStatusChange?: (status: string) => void;
+  onControlsChange?: (controls: RouteControls) => void;
 };
 
 type MarkerPair = {
@@ -18,7 +25,7 @@ const EMPTY_FEATURE_COLLECTION: FeatureCollection = {
   features: [],
 };
 
-const AnimatedRouteOverlay = ({ map, isMapLoaded }: AnimatedRouteOverlayProps) => {
+const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChange }: AnimatedRouteOverlayProps) => {
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const markersRef = useRef<MarkerPair>({});
@@ -262,6 +269,21 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded }: AnimatedRouteOverlayProps) =
   const hasMarkers = useMemo(() => Boolean(markerPositions.start || markerPositions.end), [markerPositions]);
 
   useEffect(() => {
+    onControlsChange?.({ clearMarkers, hasMarkers });
+  }, [clearMarkers, hasMarkers, onControlsChange]);
+
+  useEffect(
+    () => () => {
+      onControlsChange?.({ clearMarkers: () => {}, hasMarkers: false });
+    },
+    [onControlsChange]
+  );
+
+  useEffect(() => {
+    onStatusChange?.(status);
+  }, [status, onStatusChange]);
+
+  useEffect(() => {
     const { start, end } = markerPositions;
     if (!start || !end) return;
 
@@ -270,14 +292,7 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded }: AnimatedRouteOverlayProps) =
 
   if (!map) return null;
 
-  return (
-    <div className="animated-route-toolbar">
-      <button onClick={clearMarkers} disabled={!hasMarkers}>
-        Clear pins
-      </button>
-      <span className="animated-route-status">{status}</span>
-    </div>
-  );
+  return null;
 };
 
 export default AnimatedRouteOverlay;

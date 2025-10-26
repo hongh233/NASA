@@ -311,6 +311,23 @@
 .animated-route-status {
   font-size: 0.85rem;
   color: rgba(220, 230, 255, 0.85);
+  display: block;
+  min-height: 1.2rem;
+}
+
+.tool-card--route {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.tool-card--route h3 {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+.tool-card--route button {
+  align-self: stretch;
 }
 
 .stats-panel {
