@@ -5,7 +5,12 @@ import "./Calendar.css";
 export const Calendar = () => {
   const { isoDate, setDateFromIso, availableDates, selectedDate, isLoading } = useIceExtentContext();
 
-  const list = availableDates ?? [];
+  // Ensure dates are sorted in ascending order
+  const list = useMemo(() => {
+    const sorted = [...(availableDates ?? [])].sort((a, b) => a.localeCompare(b));
+    return sorted;
+  }, [availableDates]);
+
   const max = Math.max(list.length - 1, 0);
   const sliderIndex = useMemo(() => Math.max(0, list.indexOf(isoDate)), [list, isoDate]);
 
@@ -14,11 +19,13 @@ export const Calendar = () => {
   const handleStart = useCallback(() => setIsSliding(true), []);
   const handleEnd = useCallback(() => setIsSliding(false), []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const idx = Number(e.target.value);
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const idx = Math.min(Math.max(0, Number(e.target.value)), list.length - 1);
     const nextIso = list[idx];
-    if (nextIso) setDateFromIso(nextIso);
-  };
+    if (nextIso && nextIso !== isoDate) {
+      setDateFromIso(nextIso);
+    }
+  }, [list, setDateFromIso, isoDate]);
 
   const formatDateOnly = (d?: Date | null) => {
     if (!d) return "";
