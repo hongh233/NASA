@@ -1,6 +1,6 @@
 from pathlib import Path
 
-DATA_ROOT = Path("data/downloads/all_source")
+DATA_ROOT = Path("data/all_source")
 
 OUTPUT_DIR = Path("outputs")
 CHECKPOINT_DIR = OUTPUT_DIR / "checkpoints"
@@ -11,7 +11,7 @@ for d in [OUTPUT_DIR, CHECKPOINT_DIR, LOG_DIR]:
 
 SEQ_LEN = 6
 RADIUS_KM = 200
-BATCH_SIZE = 2
+BATCH_SIZE = 4
 LR = 1e-3
 EPOCHS = 30
 DEVICE = "cuda"
