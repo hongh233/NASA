@@ -168,9 +168,9 @@
 }
 
 .chat-box button {
-  width: 36px;
-  height: 36px;
-  border-radius: 50%;
+  width: 40px;                
+  height: 40px;
+  border-radius: 50%;         
   border: none;
   background: #2962ff;
   color: white;
@@ -178,12 +178,16 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  font-size: 18px;              
+  line-height: 1;              
+  padding: 0;                  
+  transition: transform 0.2s ease, background 0.2s ease;
 }
+
 
 .chat-box button:hover {
   background: #1e4caf;
-  transform: scale(1.05);
+  transform: scale(1.08);
 }
 
 .chat-box button:disabled {

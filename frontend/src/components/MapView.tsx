@@ -19,7 +19,6 @@ const MapView = ({
   predictedData, 
   onRouteStatusChange, 
   onRouteControlsChange,
-  onViewChange
 }: MapViewProps) => {
 
   const mapContainer = useRef<HTMLDivElement>(null);
