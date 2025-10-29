@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import mapboxgl from "mapbox-gl";
 import type { FeatureCollection, Position } from "geojson";
-import api from "../../api/mapAPI";
 
 export type RouteControls = {
   clearMarkers: () => void;

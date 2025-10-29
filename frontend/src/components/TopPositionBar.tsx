@@ -4,7 +4,6 @@ import './TopPositionBar.css';
 export interface ViewState {
   lat: number;
   lon: number;
-  bearing?: number;
   zoom?: number;
 }
 
@@ -13,7 +12,10 @@ interface Props {
   showTimestamp?: boolean;
 }
 
-export const TopPositionBar: React.FC<Props> = ({ view, showTimestamp = true }) => {
+export const TopPositionBar: React.FC<Props> = ({ 
+  view, 
+  showTimestamp = true 
+}) => {
   const [now, setNow] = useState<string>(() => new Date().toISOString().replace('T', ' ').split('.')[0] + ' UTC');
 
   useEffect(() => {
@@ -31,10 +33,6 @@ export const TopPositionBar: React.FC<Props> = ({ view, showTimestamp = true }) 
         <div className="pos-item">
           <span className="label">Center</span>
           <span className="value">{view ? `${fmt(view.lat, 4)}°, ${fmt(view.lon, 4)}°` : '—'}</span>
-        </div>
-        <div className="pos-item">
-          <span className="label">Bearing</span>
-          <span className="value">{view && view.bearing !== undefined ? `${Math.round(view.bearing)}°` : '—'}</span>
         </div>
         <div className="pos-item">
           <span className="label">Zoom</span>

@@ -6,12 +6,13 @@ import { useIceExtentContext } from "../context/IceExtentContext";
 import AnimatedRouteOverlay, { type RouteControls } from "./routePredictions/AnimatedRouteOverlay";
 import "./MapView.css";
 import type { FeatureCollection } from "geojson";
+import TopPositionBar from "./TopPositionBar";
 
 type MapViewProps = {
   predictedData: FeatureCollection | null;
   onRouteStatusChange: (status: string) => void;
-  onRouteControlsChange: (controls: any) => void;
-  onViewChange?: (view: { lat: number; lon: number; bearing: number; zoom: number }) => void;
+  onRouteControlsChange: (controls: RouteControls) => void;
+  onViewChange?: (view: { lat: number; lon: number; zoom: number }) => void;
 };
 
 const MapView = ({ 
@@ -26,6 +27,8 @@ const MapView = ({
   const [isMapLoaded, setIsMapLoaded] = useState(false);
   const { data: iceData, isLoading } = useIceExtentContext();
   const accessToken = parsedEnv.VITE_MAPBOX_TOKEN;
+  const [currentView, setCurrentView] = useState<{ lat: number; lon: number; zoom: number } | null>(null);
+
 
   // Initialize the map
   useEffect(() => {
@@ -44,13 +47,35 @@ const MapView = ({
       style: "mapbox://styles/mapbox/dark-v11",
       center: [-74.0060152, 40.7127281],
       zoom: 5,
-      maxZoom: 6
+      maxZoom: 6,
+      pitch: 0,
+      bearing: 0,
+      dragRotate: true,
+      touchPitch: true
     });
     mapRef.current = map;
 
     map.on("load", () => {
       setIsMapLoaded(true);
+
+      const nav = new mapboxgl.NavigationControl({ visualizePitch: true });
+      map.addControl(nav, "top-right");
+
+      map.once("render", () => {
+        const compassButton = document.querySelector(".mapboxgl-ctrl-compass") as HTMLButtonElement | null;
+        if (compassButton) {
+          compassButton.onclick = () => {
+            const currentPitch = map.getPitch();
+            if (currentPitch < 5) {
+              map.easeTo({ pitch: 45, duration: 600 });
+            } else {
+              map.easeTo({ pitch: 0, duration: 600 });
+            }
+          };
+        }
+      });
     });
+
 
     return () => {
       setIsMapLoaded(false);
@@ -125,48 +150,51 @@ const MapView = ({
 
   useEffect(() => {
     const map = mapRef.current;
-    if (!map || !isMapLoaded || !onViewChange) return;
+    if (!map || !isMapLoaded) return;
 
     const updateViewState = () => {
       const center = map.getCenter();
-      onViewChange({
+      const zoom = map.getZoom();
+
+      setCurrentView({
         lat: center.lat,
         lon: center.lng,
-        bearing: map.getBearing(),
-        zoom: map.getZoom()
+        zoom,
       });
     };
 
     updateViewState();
 
     map.on('move', updateViewState);
-    map.on('rotate', updateViewState);
     map.on('zoom', updateViewState);
 
     return () => {
       map.off('move', updateViewState);
-      map.off('rotate', updateViewState);
       map.off('zoom', updateViewState);
     };
-  }, [isMapLoaded, onViewChange]);
+  }, [isMapLoaded]);
 
   return (
     <div className="map-container">
       <div ref={mapContainer} className="map-canvas" />
-      {isLoading ? (
-        <div className="map-loading-overlay" role="status" aria-live="polite">
-          <div className="map-loading-spinner" />
-          <div className="map-loading-text">Loading data…</div>
-        </div>
-      ) : null}
-      <AnimatedRouteOverlay
-        map={mapRef.current}
-        isMapLoaded={isMapLoaded}
-        onStatusChange={onRouteStatusChange}
-        onControlsChange={onRouteControlsChange}
-        predictedData={predictedData}
-        iceData={iceData}
-      />
+
+        <TopPositionBar view={currentView} />
+        
+        {isLoading ? (
+          <div className="map-loading-overlay" role="status" aria-live="polite">
+            <div className="map-loading-spinner" />
+            <div className="map-loading-text">Loading data…</div>
+          </div>
+        ) : null}
+
+        <AnimatedRouteOverlay
+          map={mapRef.current}
+          isMapLoaded={isMapLoaded}
+          onStatusChange={onRouteStatusChange}
+          onControlsChange={onRouteControlsChange}
+          predictedData={predictedData}
+          iceData={iceData}
+        />
     </div>
   );
 };

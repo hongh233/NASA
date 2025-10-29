@@ -1,8 +1,8 @@
 .top-position-bar {
-  position: fixed;
-  left: 20px;
-  right: 20px;
+  position: absolute;        
   top: 16px;
+  left: 50%;         
+  transform: translateX(-50%);
   z-index: 1200;
   pointer-events: none;
 }
@@ -22,6 +22,7 @@
   font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
   font-size: 12px;
 }
+
 
 .pos-item {
   display: flex;
