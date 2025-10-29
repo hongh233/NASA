@@ -176,6 +176,7 @@ const MapView = ({
   return (
     <div className="map-container">
       <div ref={mapContainer} className="map-canvas" />
+      <div className="map-center-crosshair" />
 
         <TopPositionBar view={currentView} />
         

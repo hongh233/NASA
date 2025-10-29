@@ -1,4 +1,6 @@
-.map-container { position: relative; }
+.map-container {
+  position: relative;
+}
 
 .map-loading-overlay {
   position: absolute;
@@ -29,3 +31,51 @@
 }
 
 @keyframes map-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+
+
+
+.map-center-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 24px;
+  height: 24px;
+  transform: translate(-50%, -50%);
+  pointer-events: none;
+  z-index: 50;
+}
+
+.map-center-crosshair::before,
+.map-center-crosshair::after {
+  content: '';
+  position: absolute;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 2px;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+}
+
+.map-center-crosshair::before {
+  top: 50%;
+  left: 0;
+  width: 100%;
+  height: 2px;
+  transform: translateY(-50%);
+}
+
+.map-center-crosshair::after {
+  left: 50%;
+  top: 0;
+  width: 2px;
+  height: 100%;
+  transform: translateX(-50%);
+}
+
+.map-center-crosshair::before,
+.map-center-crosshair::after {
+  transition: opacity 0.2s ease, background 0.3s ease;
+}
+
+.map-container:active .map-center-crosshair::before,
+.map-container:active .map-center-crosshair::after {
+  background: rgba(100, 200, 255, 0.9);
+}
