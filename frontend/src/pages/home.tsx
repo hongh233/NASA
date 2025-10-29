@@ -7,6 +7,8 @@ import { predictIceExtent } from "../services/icePredictionAPI";
 import type { FeatureCollection } from "geojson";
 import { useIceExtentContext } from "../context/IceExtentContext";
 import { useEffect } from "react";
+import { ChatBox } from "../components/ChatBox";
+import '../components/ChatBox.css';
 
 const HomePage = () => {
   const { isoDate } = useIceExtentContext();
@@ -130,6 +132,7 @@ const HomePage = () => {
         />
       </div>
       <RightStatsPanel predictedData={predictedData} />
+      <ChatBox />
     </div>
   );
 };
