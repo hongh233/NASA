@@ -9,6 +9,14 @@ import { useIceExtentContext } from "../context/IceExtentContext";
 import { useEffect } from "react";
 import { ChatBox } from "../components/ChatBox";
 import '../components/ChatBox.css';
+import TopPositionBar from "../components/TopPositionBar";
+
+interface ViewState {
+  lat: number;
+  lon: number;
+  bearing: number;
+  zoom: number;
+}
 
 const HomePage = () => {
   const { isoDate } = useIceExtentContext();
@@ -25,6 +33,7 @@ const HomePage = () => {
   const [predictDate, setPredictDate] = useState<string>("2026-01-01");
   const [predictRadius, setPredictRadius] = useState<number>(500);
   const [predictThresh, setPredictThresh] = useState<number>(0.5);
+  const [mapView, setMapView] = useState<ViewState | null>(null);
 
   useEffect(() => {
     if (predictedData !== null) {
@@ -50,6 +59,7 @@ const HomePage = () => {
 
   return (
     <div className="app-shell">
+      <TopPositionBar view={mapView} />
       <div className="map-frame">
         <div className="tool-bar">
           <div id="mission-tools-panel">
@@ -129,6 +139,7 @@ const HomePage = () => {
           onRouteStatusChange={setRouteStatus}
           onRouteControlsChange={handleRouteControlsChange}
           predictedData={predictedData}
+          onViewChange={setMapView}
         />
       </div>
       <RightStatsPanel predictedData={predictedData} />

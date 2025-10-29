@@ -11,9 +11,16 @@ type MapViewProps = {
   predictedData: FeatureCollection | null;
   onRouteStatusChange: (status: string) => void;
   onRouteControlsChange: (controls: any) => void;
+  onViewChange?: (view: { lat: number; lon: number; bearing: number; zoom: number }) => void;
 };
 
-const MapView = ({ predictedData, onRouteStatusChange, onRouteControlsChange }: MapViewProps) => {
+const MapView = ({ 
+  predictedData, 
+  onRouteStatusChange, 
+  onRouteControlsChange,
+  onViewChange
+}: MapViewProps) => {
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -115,6 +122,33 @@ const MapView = ({ predictedData, onRouteStatusChange, onRouteControlsChange }: 
       },
     });
   }, [predictedData, isMapLoaded]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isMapLoaded || !onViewChange) return;
+
+    const updateViewState = () => {
+      const center = map.getCenter();
+      onViewChange({
+        lat: center.lat,
+        lon: center.lng,
+        bearing: map.getBearing(),
+        zoom: map.getZoom()
+      });
+    };
+
+    updateViewState();
+
+    map.on('move', updateViewState);
+    map.on('rotate', updateViewState);
+    map.on('zoom', updateViewState);
+
+    return () => {
+      map.off('move', updateViewState);
+      map.off('rotate', updateViewState);
+      map.off('zoom', updateViewState);
+    };
+  }, [isMapLoaded, onViewChange]);
 
   return (
     <div className="map-container">
