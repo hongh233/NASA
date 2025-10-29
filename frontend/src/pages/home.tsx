@@ -5,8 +5,11 @@ import RightStatsPanel from "../components/RightStatsPanel";
 import type { RouteControls } from "../components/routePredictions/AnimatedRouteOverlay";
 import { predictIceExtent } from "../services/icePredictionAPI";
 import type { FeatureCollection } from "geojson";
+import { useIceExtentContext } from "../context/IceExtentContext";
+import { useEffect } from "react";
 
 const HomePage = () => {
+  const { isoDate } = useIceExtentContext();
   const [routeStatus, setRouteStatus] = useState("idle");
   const [routeControls, setRouteControls] = useState<RouteControls>({
     clearMarkers: () => {},
@@ -20,6 +23,12 @@ const HomePage = () => {
   const [predictDate, setPredictDate] = useState<string>("2026-01-01");
   const [predictRadius, setPredictRadius] = useState<number>(500);
   const [predictThresh, setPredictThresh] = useState<number>(0.5);
+
+  useEffect(() => {
+    if (predictedData !== null) {
+      setPredictedData(null);
+    }
+  }, [isoDate]);
 
   const handleRouteControlsChange = useCallback((controls: RouteControls) => {
     setRouteControls((prev) => {
