@@ -5,14 +5,15 @@ import parsedEnv from "../config/env";
 import { useIceExtentContext } from "../context/IceExtentContext";
 import AnimatedRouteOverlay, { type RouteControls } from "./routePredictions/AnimatedRouteOverlay";
 import "./MapView.css";
+import type { FeatureCollection } from "geojson";
 
 type MapViewProps = {
-  onRouteStatusChange?: (status: string) => void;
-  onRouteControlsChange?: (controls: RouteControls) => void;
-  predictedData?: GeoJSON.FeatureCollection | null;
+  predictedData: FeatureCollection | null;
+  onRouteStatusChange: (status: string) => void;
+  onRouteControlsChange: (controls: any) => void;
 };
 
-const MapView = ({ onRouteStatusChange, onRouteControlsChange, predictedData }: MapViewProps) => {
+const MapView = ({ predictedData, onRouteStatusChange, onRouteControlsChange }: MapViewProps) => {
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
@@ -129,6 +130,8 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange, predictedData }: 
         isMapLoaded={isMapLoaded}
         onStatusChange={onRouteStatusChange}
         onControlsChange={onRouteControlsChange}
+        predictedData={predictedData}
+        iceData={iceData}
       />
     </div>
   );

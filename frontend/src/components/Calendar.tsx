@@ -17,27 +17,24 @@ export const Calendar = () => {
   const [isSliding, setIsSliding] = useState(false);
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
-  const commitPendingIndex = useCallback(() => {
-    setIsSliding(false);
-    setPendingIndex((idx) => {
-      if (idx === null) return null;
-      const iso = list[Math.min(Math.max(idx, 0), max)];
-      if (iso && iso !== isoDate) {
-        setDateFromIso(iso);
-      }
-      return null;
-    });
-  }, [isoDate, list, max, setDateFromIso]);
+  // ✅ 延迟生效机制：滑动结束后，才触发 context 更新
+  useEffect(() => {
+    if (pendingIndex === null || !isSliding) return;
+    const iso = list[Math.min(Math.max(pendingIndex, 0), max)];
+    if (iso && iso !== isoDate) {
+      setDateFromIso(iso);
+    }
+  }, [pendingIndex, isSliding, list, max, isoDate, setDateFromIso]);
 
   const handleStart = useCallback(() => setIsSliding(true), []);
-  const handleEnd = useCallback(() => {
-    commitPendingIndex();
-  }, [commitPendingIndex]);
-
-  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    const idx = Math.min(Math.max(0, Number(e.target.value)), list.length - 1);
-    setPendingIndex(idx);
-  }, [list.length]);
+  const handleEnd = useCallback(() => setIsSliding(false), []);
+  const handleChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const idx = Math.min(Math.max(0, Number(e.target.value)), list.length - 1);
+      setPendingIndex(idx);
+    },
+    [list.length]
+  );
 
   const formatDateOnly = (d?: Date | null) => {
     if (!d) return "";
@@ -77,7 +74,7 @@ export const Calendar = () => {
           <div className="calendar-horizontal__year--end">{list[list.length - 1]?.slice(0, 4) ?? ""}</div>
         </div>
 
-        {/* floating bubble above thumb - left percentage is dynamic */}
+        {/* floating bubble above thumb */}
         <div
           aria-hidden
           ref={bubbleRef}

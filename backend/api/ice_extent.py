@@ -7,7 +7,7 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
-from converter import GeoDataConversionError, convert_tif_to_geojson
+from backend.converter import GeoDataConversionError, convert_tif_to_geojson
 from .api_predict_geojson import PredictionError, _cached_prediction
 
 router = APIRouter(tags=["ice_extent"])
