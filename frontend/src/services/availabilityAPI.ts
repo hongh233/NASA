@@ -1,9 +1,5 @@
 import api from "../api/mapAPI";
-
-export type AvailableDatesResponse = {
-  count: number;
-  dates: string[]; // ISO YYYY-MM-DD
-};
+import type { AvailableDatesResponse } from "../types";
 
 export const fetchAvailableDates = async (): Promise<string[]> => {
   try {

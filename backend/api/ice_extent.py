@@ -7,7 +7,8 @@ from pathlib import Path
 from fastapi import APIRouter, HTTPException, Query
 from fastapi.responses import JSONResponse
 
-from converter import GeoDataConversionError, convert_tif_to_geojson
+from backend.converter import GeoDataConversionError, convert_tif_to_geojson
+from .api_predict_geojson import PredictionError, _cached_prediction
 
 router = APIRouter(tags=["ice_extent"])
 
@@ -125,3 +126,40 @@ def ice_extent_by_year(
         raise HTTPException(status_code=404, detail=f"No valid GeoTIFFs converted for year {year}")
 
     return {"year": year, "radius_km": radius_km, "days": items}
+
+
+@router.get("/ice_extent/predict")
+def predict_ice_extent(
+    date: str = Query(..., description="Prediction date (YYYY-MM-DD)"),
+    radius_km: float = Query(500, ge=0, description="Radial distance filter (kilometres)"),
+    thresh: float = Query(0.5, ge=0.0, le=1.0, description="Threshold for ice probability"),
+):
+    """
+    Predict sea ice extent for a given date.
+    Returns a GeoJSON FeatureCollection of predicted ice locations.
+    """
+    if not DATE_PATTERN.match(date):
+        raise HTTPException(status_code=400, detail="Date must be provided as YYYY-MM-DD.")
+    
+    try:
+        # Parse the date components
+        year = int(date[:4])
+        month = int(date[5:7])
+        
+        # Get prediction from cached function
+        feature_collection = _cached_prediction(year, month, thresh, radius_km)
+        
+    except PredictionError as exc:
+        raise HTTPException(status_code=500, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=f"Invalid date format: {exc}") from exc
+    except Exception as exc:
+        raise HTTPException(status_code=500, detail=f"Unexpected prediction error: {exc}") from exc
+
+    payload = {
+        "date": date,
+        "radius_km": radius_km,
+        "threshold": thresh,
+        "feature_collection": feature_collection,
+    }
+    return JSONResponse(payload)

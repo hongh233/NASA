@@ -4,17 +4,27 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import parsedEnv from "../config/env";
 import { useIceExtentContext } from "../context/IceExtentContext";
 import AnimatedRouteOverlay, { type RouteControls } from "./routePredictions/AnimatedRouteOverlay";
+import "./MapView.css";
+import type { FeatureCollection } from "geojson";
 
 type MapViewProps = {
-  onRouteStatusChange?: (status: string) => void;
-  onRouteControlsChange?: (controls: RouteControls) => void;
+  predictedData: FeatureCollection | null;
+  onRouteStatusChange: (status: string) => void;
+  onRouteControlsChange: (controls: any) => void;
+  onViewChange?: (view: { lat: number; lon: number; bearing: number; zoom: number }) => void;
 };
 
-const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) => {
+const MapView = ({ 
+  predictedData, 
+  onRouteStatusChange, 
+  onRouteControlsChange,
+  onViewChange
+}: MapViewProps) => {
+
   const mapContainer = useRef<HTMLDivElement>(null);
   const mapRef = useRef<mapboxgl.Map | null>(null);
   const [isMapLoaded, setIsMapLoaded] = useState(false);
-  const { data: iceData } = useIceExtentContext();
+  const { data: iceData, isLoading } = useIceExtentContext();
   const accessToken = parsedEnv.VITE_MAPBOX_TOKEN;
 
   // Initialize the map
@@ -49,7 +59,7 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) =
     };
   }, [accessToken]);
 
-  // Update ice extent data on the map
+  // Update ice extent data on the map, hide it when predictions are visible
   useEffect(() => {
     const map = mapRef.current;
     if (!map || !isMapLoaded || !iceData) return;
@@ -61,6 +71,8 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) =
     if (map.getSource("iceLoss")) {
       map.removeSource("iceLoss");
     }
+
+    if (predictedData) return;
 
     // Add new source and layer
     map.addSource("iceLoss", {
@@ -78,16 +90,82 @@ const MapView = ({ onRouteStatusChange, onRouteControlsChange }: MapViewProps) =
         "circle-opacity": 0.7,
       },
     });
-  }, [iceData, isMapLoaded]);
+  }, [iceData, isMapLoaded, predictedData]);
+
+  // Update predicted data on the map (separate layer)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isMapLoaded) return;
+
+    if (map.getLayer("predictedIce-fill")) {
+      map.removeLayer("predictedIce-fill");
+    }
+    if (map.getSource("predictedIce")) {
+      map.removeSource("predictedIce");
+    }
+
+    if (!predictedData) return;
+
+    map.addSource("predictedIce", {
+      type: "geojson",
+      data: predictedData,
+    });
+
+    map.addLayer({
+      id: "predictedIce-fill",
+      type: "circle",
+      source: "predictedIce",
+      paint: {
+        "circle-radius": 3,
+        "circle-color": "#4bd7ff",
+        "circle-opacity": 0.9,
+      },
+    });
+  }, [predictedData, isMapLoaded]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !isMapLoaded || !onViewChange) return;
+
+    const updateViewState = () => {
+      const center = map.getCenter();
+      onViewChange({
+        lat: center.lat,
+        lon: center.lng,
+        bearing: map.getBearing(),
+        zoom: map.getZoom()
+      });
+    };
+
+    updateViewState();
+
+    map.on('move', updateViewState);
+    map.on('rotate', updateViewState);
+    map.on('zoom', updateViewState);
+
+    return () => {
+      map.off('move', updateViewState);
+      map.off('rotate', updateViewState);
+      map.off('zoom', updateViewState);
+    };
+  }, [isMapLoaded, onViewChange]);
 
   return (
     <div className="map-container">
       <div ref={mapContainer} className="map-canvas" />
+      {isLoading ? (
+        <div className="map-loading-overlay" role="status" aria-live="polite">
+          <div className="map-loading-spinner" />
+          <div className="map-loading-text">Loading data…</div>
+        </div>
+      ) : null}
       <AnimatedRouteOverlay
         map={mapRef.current}
         isMapLoaded={isMapLoaded}
         onStatusChange={onRouteStatusChange}
         onControlsChange={onRouteControlsChange}
+        predictedData={predictedData}
+        iceData={iceData}
       />
     </div>
   );

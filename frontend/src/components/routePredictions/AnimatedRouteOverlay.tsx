@@ -13,6 +13,8 @@ type AnimatedRouteOverlayProps = {
   isMapLoaded: boolean;
   onStatusChange?: (status: string) => void;
   onControlsChange?: (controls: RouteControls) => void;
+  predictedData?: FeatureCollection | null;
+  iceData?: FeatureCollection | null; 
 };
 
 type MarkerPair = {
@@ -25,7 +27,14 @@ const EMPTY_FEATURE_COLLECTION: FeatureCollection = {
   features: [],
 };
 
-const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChange }: AnimatedRouteOverlayProps) => {
+const AnimatedRouteOverlay = ({
+  map,
+  isMapLoaded,
+  onStatusChange,
+  onControlsChange,
+  predictedData,
+  iceData,
+}: AnimatedRouteOverlayProps) => {
   const animationRef = useRef<number | null>(null);
   const startTimeRef = useRef<number>(0);
   const markersRef = useRef<MarkerPair>({});
@@ -50,13 +59,8 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChan
     const start = markersRef.current.start?.getLngLat();
     const end = markersRef.current.end?.getLngLat();
 
-    if (start) {
-      next.start = [start.lng, start.lat];
-    }
-
-    if (end) {
-      next.end = [end.lng, end.lat];
-    }
+    if (start) next.start = [start.lng, start.lat];
+    if (end) next.end = [end.lng, end.lat];
 
     setMarkerPositions(next);
   }, []);
@@ -159,26 +163,39 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChan
     return [];
   }, []);
 
-  // to be used (now is empty so that the code compiles)
-  const requestRoutePrediction = useCallback(
+  const requestRouteNavigation = useCallback(
     async (start: Position, end: Position) => {
-      if (!map) return;
+      const geojsonData = predictedData ?? iceData;
+      if (!map || !geojsonData) {
+        console.warn("No geojson data available for routing");
+        return;
+      }
+
+      console.log("Routing using:", predictedData ? "predictedData" : "iceData");
 
       setStatus("requesting");
       try {
-        const resp = await api.post("/route_prediction", { start, end });
-        if (resp?.data) {
-          const geoPredictions = resp.data as FeatureCollection;
-          const coords = extractFirstLineCoords(geoPredictions);
-          if (coords.length) {
-            startAnimation(coords);
-            return;
-          }
+        const resp = await fetch("http://127.0.0.1:5001/api/route_navigation", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            start,
+            end,
+            geojson: geojsonData,
+          }),
+        });
+
+        if (!resp.ok) throw new Error(`Server error ${resp.status}`);
+        const geoPredictions = (await resp.json()) as FeatureCollection;
+
+        const coords = extractFirstLineCoords(geoPredictions);
+        if (coords.length) {
+          startAnimation(coords);
+        } else {
           throw new Error("Route response missing coordinates");
         }
-        throw new Error("Empty response from prediction API");
       } catch (err) {
-        console.warn("Route prediction failed, falling back to sample dataset", err);
+        console.warn("Route navigation failed, falling back to sample dataset", err);
         try {
           const fallback = await fetch("/dataset/hudson-bay.geojson");
           if (!fallback.ok) throw new Error(fallback.statusText);
@@ -192,7 +209,7 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChan
         setStatus("idle");
       }
     },
-    [extractFirstLineCoords, map, startAnimation]
+    [extractFirstLineCoords, map, startAnimation, predictedData, iceData] 
   );
 
   useEffect(() => {
@@ -224,7 +241,6 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChan
 
     const ensureAnimatedSource = () => {
       if (!map) return;
-
       if (!map.getSource("animated-route")) {
         map.addSource("animated-route", { type: "geojson", data: EMPTY_FEATURE_COLLECTION });
       }
@@ -286,12 +302,10 @@ const AnimatedRouteOverlay = ({ map, isMapLoaded, onStatusChange, onControlsChan
   useEffect(() => {
     const { start, end } = markerPositions;
     if (!start || !end) return;
-
-    requestRoutePrediction(start, end);
-  }, [markerPositions, requestRoutePrediction]);
+    requestRouteNavigation(start, end);
+  }, [markerPositions, requestRouteNavigation]);
 
   if (!map) return null;
-
   return null;
 };
 
