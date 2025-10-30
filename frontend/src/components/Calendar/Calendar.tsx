@@ -105,10 +105,27 @@ export const Calendar = () => {
     <div className="calendar-timeline-container">
       <div className="calendar-timeline-grid">
         <div className="calendar-timeline-header">
-          <span className="calendar-year-left">{list[0]?.slice(0, 4) ?? ""}</span>
+          <button
+            className="calendar-edge-btn"
+            onClick={() => list.length > 0 && setDateFromIso(list[0])}
+            disabled={isLoading}
+            title="Go to earliest date"
+          >
+            {list[0]?.slice(0, 4) ?? ""}
+          </button>
+
           <div className="calendar-current-date">{formattedCurrent}</div>
-          <span className="calendar-year-right">{list[list.length - 1]?.slice(0, 4) ?? ""}</span>
+
+          <button
+            className="calendar-edge-btn"
+            onClick={() => list.length > 0 && setDateFromIso(list[list.length - 1])}
+            disabled={isLoading}
+            title="Go to latest date"
+          >
+            {list[list.length - 1]?.slice(0, 4) ?? ""}
+          </button>
         </div>
+
 
         <div className="calendar-timeline-main">
           <div className="calendar-timeline-side">

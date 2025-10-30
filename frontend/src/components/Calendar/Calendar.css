@@ -259,3 +259,34 @@
 .timeline__slider:hover {
   background: linear-gradient(90deg, #50525a, #7a7b83);
 }
+
+
+.calendar-edge-btn {
+  background: rgba(60, 65, 75, 0.85);
+  color: #e4e6eb;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 6px;
+  padding: 4px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  min-width: 50px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.35);
+}
+
+.calendar-edge-btn:hover {
+  background: rgba(90, 100, 120, 0.9);
+  border-color: rgba(150, 180, 255, 0.4);
+  transform: translateY(-1px);
+}
+
+.calendar-edge-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.calendar-edge-btn:active {
+  transform: scale(0.95);
+  background: rgba(100, 120, 160, 0.9);
+}
