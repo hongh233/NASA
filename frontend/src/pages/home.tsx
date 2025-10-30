@@ -1,14 +1,13 @@
-import { useCallback, useState } from "react";
-import { Calendar } from "../components/Calendar";
+import { useCallback, useState, useEffect } from "react";
+import { Calendar } from "../components/Calendar/Calendar"; 
 import MapView from "../components/MapView";
 import RightStatsPanel from "../components/RightStatsPanel";
 import type { RouteControls } from "../components/routePredictions/AnimatedRouteOverlay";
 import { predictIceExtent } from "../services/icePredictionAPI";
 import type { FeatureCollection } from "geojson";
 import { useIceExtentContext } from "../context/IceExtentContext";
-import { useEffect } from "react";
 import { ChatBox } from "../components/ChatBox";
-import '../components/ChatBox.css';
+import "../components/ChatBox.css";
 
 const HomePage = () => {
   const { isoDate } = useIceExtentContext();
@@ -21,11 +20,12 @@ const HomePage = () => {
   const [predicting, setPredicting] = useState(false);
   const [predictError, setPredictError] = useState<string | null>(null);
 
-  // form state for prediction
+  // prediction parameters
   const [predictDate, setPredictDate] = useState<string>("2026-01-01");
   const [predictRadius, setPredictRadius] = useState<number>(500);
   const [predictThresh, setPredictThresh] = useState<number>(0.5);
 
+  // reset prediction when timeline changes date
   useEffect(() => {
     if (predictedData !== null) {
       setPredictedData(null);
@@ -51,8 +51,10 @@ const HomePage = () => {
   return (
     <div className="app-shell">
       <div className="map-frame">
+        {/* --- Tool Sidebar --- */}
         <div className="tool-bar">
           <div id="mission-tools-panel">
+            {/* Route Tools */}
             <div className="tool-card tool-card--stacked tool-card--route">
               <h3>Route Tools</h3>
               <button
@@ -64,6 +66,8 @@ const HomePage = () => {
               </button>
               <span className="animated-route-status">{routeStatusLabel}</span>
             </div>
+
+            {/* Prediction Tools */}
             <div className="tool-card tool-card--stacked tool-card--predict">
               <h3>Predict Ice</h3>
               <label>
@@ -93,6 +97,7 @@ const HomePage = () => {
                   onChange={(e) => setPredictThresh(Number(e.target.value))}
                 />
               </label>
+
               <div className="predict-controls">
                 <button
                   type="button"
@@ -113,24 +118,32 @@ const HomePage = () => {
                 >
                   {predicting ? "Predicting…" : "Predict"}
                 </button>
-                <button type="button" onClick={() => setPredictedData(null)} disabled={predicting}>
+                <button
+                  type="button"
+                  onClick={() => setPredictedData(null)}
+                  disabled={predicting}
+                >
                   Clear
                 </button>
               </div>
-              {predictError ? <div className="error">{predictError}</div> : null}
+
+              {predictError && <div className="error">{predictError}</div>}
             </div>
           </div>
         </div>
 
-        {/* Persistent vertical date slider, independent of the tool bar */}
-        <Calendar />
-
+        {/* --- Map View --- */}
         <MapView
           onRouteStatusChange={setRouteStatus}
           onRouteControlsChange={handleRouteControlsChange}
           predictedData={predictedData}
         />
+
+        {/* --- Calendar Module (bottom timeline) --- */}
+        <Calendar />
       </div>
+
+      {/* --- Right Stats Panel & Chat --- */}
       <RightStatsPanel predictedData={predictedData} />
       <ChatBox />
     </div>
