@@ -1,12 +1,44 @@
 import { useMemo, useState, useEffect, useCallback } from "react";
 import { useIceExtentContext } from "../../context/IceExtentContext";
-import { CalendarTimeline } from "./CalendarTimeline";
 import "./Calendar.css";
 
-export const Calendar = () => {
-  const { isoDate, setDateFromIso, availableDates, selectedDate, isLoading } = useIceExtentContext();
 
-  const list = useMemo(() => [...(availableDates ?? [])].sort((a, b) => a.localeCompare(b)), [availableDates]);
+type CalendarNudgeButtonProps = {
+  label: string;        
+  title: string;        
+  onClick: () => void;  
+  disabled?: boolean;
+};
+
+const CalendarNudgeButton: React.FC<CalendarNudgeButtonProps> = ({
+  label,
+  title,
+  onClick,
+  disabled,
+}) => (
+  <button
+    type="button"
+    className="calendar-btn"
+    title={title}
+    aria-label={title}
+    onClick={onClick}
+    disabled={disabled}
+  >
+    {label}
+  </button>
+);
+
+
+export const Calendar = () => {
+  const { isoDate, setDateFromIso, availableDates, selectedDate, isLoading } =
+    useIceExtentContext();
+
+
+  const list = useMemo(
+    () => [...(availableDates ?? [])].sort((a, b) => a.localeCompare(b)),
+    [availableDates]
+  );
+
   const max = Math.max(list.length - 1, 0);
   const sliderIndex = Math.max(0, list.indexOf(isoDate));
 
@@ -14,28 +46,103 @@ export const Calendar = () => {
   const [pendingIndex, setPendingIndex] = useState<number | null>(null);
 
   const handleStart = useCallback(() => setIsSliding(true), []);
-  const handleEnd = useCallback(() => setIsSliding(false), []);
-  const handleChange = useCallback((index: number) => setPendingIndex(index), []);
+  const handleEnd = useCallback(() => {
+    setIsSliding(false);
 
-  useEffect(() => {
-    if (pendingIndex === null || !isSliding) return;
-    const iso = list[Math.min(Math.max(pendingIndex, 0), max)];
-    if (iso && iso !== isoDate) setDateFromIso(iso);
-  }, [pendingIndex, isSliding, list, max, isoDate, setDateFromIso]);
+    if (pendingIndex != null) {
+      const iso = list[Math.min(Math.max(pendingIndex, 0), max)];
+      if (iso && iso !== isoDate) setDateFromIso(iso);
+    }
+  }, [pendingIndex, list, max, isoDate, setDateFromIso]);
+
+  const handleChange = useCallback((index: number) => {
+    setPendingIndex(index);
+  }, []);
 
   const activeIndex = pendingIndex ?? sliderIndex;
-  const bubbleDate = pendingIndex !== null ? new Date(`${list[pendingIndex]}T00:00:00Z`) : selectedDate;
+  const bubbleDate =
+    pendingIndex !== null ? new Date(`${list[pendingIndex]}T00:00:00Z`) : selectedDate;
+
+  const nearestIndexToISO = useCallback(
+    (targetISO: string, preferDir: number) => {
+      let i = list.findIndex((d) => d >= targetISO);
+      if (i === -1) return max;
+      if (preferDir < 0 && i > 0 && list[i] > targetISO) i = i - 1;
+      return Math.max(0, Math.min(i, max));
+    },
+    [list, max]
+  );
+
+  const nudge = useCallback(
+    (unit: "day" | "month" | "year", dir: number) => {
+      if (!list.length) return;
+      const baseISO = isoDate ?? list[activeIndex];
+      const dt = new Date(`${baseISO}T00:00:00Z`);
+      if (unit === "day") dt.setUTCDate(dt.getUTCDate() + dir);
+      else if (unit === "month") dt.setUTCMonth(dt.getUTCMonth() + dir);
+      else dt.setUTCFullYear(dt.getUTCFullYear() + dir);
+
+      const target = dt.toISOString().slice(0, 10);
+      const idx = nearestIndexToISO(target, dir);
+      const iso = list[idx];
+      if (iso) {
+        setDateFromIso(iso);
+        setPendingIndex(idx);
+      }
+    },
+    [isoDate, list, activeIndex, nearestIndexToISO, setDateFromIso]
+  );
+
+  const formattedCurrent = bubbleDate
+    ? bubbleDate.toISOString().slice(0, 10)
+    : isoDate ?? "";
 
   return (
-    <CalendarTimeline
-      list={list}
-      currentIndex={activeIndex}
-      isSliding={isSliding}
-      isLoading={isLoading}
-      onStart={handleStart}
-      onEnd={handleEnd}
-      onChange={handleChange}
-      bubbleDate={bubbleDate ?? null}
-    />
+    <div className="calendar-timeline-container">
+      <div className="calendar-timeline-grid">
+        <div className="calendar-timeline-header">
+          <span className="calendar-year-left">{list[0]?.slice(0, 4) ?? ""}</span>
+          <div className="calendar-current-date">{formattedCurrent}</div>
+          <span className="calendar-year-right">{list[list.length - 1]?.slice(0, 4) ?? ""}</span>
+        </div>
+
+        <div className="calendar-timeline-main">
+          <div className="calendar-timeline-side">
+            <CalendarNudgeButton label="-Y" title="Previous year" onClick={() => nudge("year", -1)} />
+            <CalendarNudgeButton label="-M" title="Previous month" onClick={() => nudge("month", -1)} />
+            <CalendarNudgeButton label="-D" title="Previous day" onClick={() => nudge("day", -1)} />
+          </div>
+
+          <div className="calendar-timeline-center">
+            <div className="timeline">
+              <input
+                type="range"
+                className="timeline__slider"
+                min={0}
+                max={max}
+                step={1}
+                value={Math.min(Math.max(activeIndex, 0), max)}
+                onChange={(e) => handleChange(Number(e.target.value))}
+                onMouseDown={handleStart}
+                onTouchStart={handleStart}
+                onMouseUp={handleEnd}
+                onTouchEnd={handleEnd}
+                onKeyUp={handleEnd}
+                onBlur={handleEnd}
+                disabled={list.length === 0}
+              />
+            </div>
+          </div>
+
+          <div className="calendar-timeline-side">
+            <CalendarNudgeButton label="+D" title="Next day" onClick={() => nudge("day", 1)} />
+            <CalendarNudgeButton label="+M" title="Next month" onClick={() => nudge("month", 1)} />
+            <CalendarNudgeButton label="+Y" title="Next year" onClick={() => nudge("year", 1)} />
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
+
+export default Calendar;
