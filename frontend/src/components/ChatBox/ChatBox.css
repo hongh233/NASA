@@ -1,0 +1,208 @@
+.chat-box {
+  position: fixed;
+  left: 20px;
+  bottom: 20px;
+  width: 320px;
+  height: 480px;
+  background: rgba(25, 32, 48, 0.08);
+  border: 1px solid rgba(126, 162, 255, 0.3);
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  z-index: 9999;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+  color: #ffffff;
+  backdrop-filter: blur(6px);
+  isolation: isolate;
+}
+
+.chat-box.minimized {
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
+  overflow: hidden;
+  background: rgba(25, 32, 48, 0.85);
+  border: 1px solid rgba(140, 170, 255, 0.6);
+  box-shadow: 0 0 12px rgba(126, 162, 255, 0.4);
+}
+
+.chat-box.minimized:hover {
+  transform: scale(1.08);
+  box-shadow: 0 0 15px rgba(126, 162, 255, 0.5);
+}
+
+/* ───────── Header ───────── */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 12px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(25, 32, 48, 0.1);
+  border-radius: 12px 12px 0 0;
+}
+
+.minimized .chat-header {
+  height: 44px;
+  width: 44px;
+  padding: 0;
+  justify-content: center;
+  border: none;
+  border-radius: 10px;
+  background: rgba(25, 32, 48, 0.85);
+}
+
+/* ───────── Title ───────── */
+.chat-header h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  color: #e5e7eb;
+  letter-spacing: 0.02em;
+}
+
+/* ───────── Minimize Button ───────── */
+.minimize-button {
+  background: rgba(98, 134, 255, 0.3);
+  border: 1px solid rgba(140, 170, 255, 0.5);
+  cursor: pointer;
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+  z-index: 10000;
+}
+
+.minimize-button:hover {
+  background: rgba(126, 162, 255, 0.6);
+  box-shadow: 0 0 8px rgba(126, 162, 255, 0.5);
+}
+
+
+/* ───────── Chat Content ───────── */
+.chat-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.chat-messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.chat-messages::-webkit-scrollbar {
+  width: 6px;
+}
+.chat-messages::-webkit-scrollbar-thumb {
+  background: rgba(126, 162, 255, 0.3);
+  border-radius: 3px;
+}
+
+/* ───────── Messages ───────── */
+.message {
+  padding: 10px 14px;
+  border-radius: 12px;
+  max-width: 85%;
+  font-size: 13px;
+  line-height: 1.4;
+  animation: messageAppear 0.3s ease;
+}
+
+.message.user {
+  background: rgba(98, 134, 255, 0.45);
+  margin-left: auto;
+  border-bottom-right-radius: 4px;
+  color: #fff;
+}
+
+.message.assistant {
+  background: rgba(255, 255, 255, 0.12);
+  margin-right: auto;
+  border-bottom-left-radius: 4px;
+  color: #e5e7eb;
+}
+
+@keyframes messageAppear {
+  from {
+    opacity: 0;
+    transform: translateY(6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ───────── Input Form ───────── */
+.chat-box form {
+  display: flex;
+  padding: 10px;
+  gap: 8px;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(25, 32, 48, 0.1);
+  border-radius: 0 0 12px 12px;
+}
+
+.chat-box input {
+  flex: 1;
+  padding: 8px 14px;
+  border: 1px solid rgba(140, 170, 255, 0.3);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  font-size: 13px;
+  transition: all 0.2s ease;
+}
+
+.chat-box input:focus {
+  outline: none;
+  border-color: rgba(140, 170, 255, 0.6);
+  background: rgba(255, 255, 255, 0.15);
+}
+
+.chat-box input::placeholder {
+  color: rgba(255, 255, 255, 0.55);
+}
+
+/* ───────── Send Button ───────── */
+.chat-box button {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  border: 1px solid rgba(140, 170, 255, 0.5);
+  background: rgba(98, 134, 255, 0.3);
+  color: #fff;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  transition: all 0.25s ease;
+}
+
+.chat-box button:hover {
+  background: rgba(126, 162, 255, 0.65);
+  transform: scale(1.08);
+  box-shadow: 0 0 10px rgba(126, 162, 255, 0.5);
+}
+
+.chat-box button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* ───────── Hide content when minimized ───────── */
+.minimized .chat-content {
+  display: none;
+}

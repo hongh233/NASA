@@ -5,7 +5,7 @@ import RightStatsPanel from "../components/RightStatsPanel";
 import type { RouteControls } from "../components/routePredictions/AnimatedRouteOverlay";
 import type { FeatureCollection } from "geojson";
 import { useIceExtentContext } from "../context/IceExtentContext";
-import { ChatBox } from "../components/ChatBox";
+import { ChatBox } from "../components/ChatBox/ChatBox";
 import { ToolBar } from "../components/ToolBar/ToolBar";
 
 const HomePage = () => {
