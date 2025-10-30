@@ -21,7 +21,7 @@ export const ToolBar = ({
   const [predictDate, setPredictDate] = useState<string>("2026-01-01");
   const [predictRadius, setPredictRadius] = useState<number>(500);
   const [predictThresh, setPredictThresh] = useState<number>(0.5);
-  const [expanded, setExpanded] = useState(false);
+  const [expanded, setExpanded] = useState(true);
 
   const routeStatusLabel =
     routeStatus === "requesting"

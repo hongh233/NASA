@@ -1,9 +1,8 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./MapHudModal.css";
 
 export const MapHudModal = () => {
   const [isOpen, setIsOpen] = useState(window.innerWidth >= 1024);
-  const [isWide, setIsWide] = useState(window.innerWidth >= 768);
 
   // fake trend data
   const [trendValue, setTrendValue] = useState(-12.4);
@@ -16,9 +15,9 @@ export const MapHudModal = () => {
 
   useEffect(() => {
     const handleResize = () => {
-      const wide = window.innerWidth >= 768;
-      setIsWide(wide);
-      if (!wide) setIsOpen(false);
+      if (window.innerWidth <= 1024) {
+        setIsOpen(false);
+      }
     };
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);

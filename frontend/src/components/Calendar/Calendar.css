@@ -290,3 +290,9 @@
   transform: scale(0.95);
   background: rgba(100, 120, 160, 0.9);
 }
+
+@media (max-width: 1000px) {
+  .calendar-timeline-side {
+    display: none;
+  }
+}
