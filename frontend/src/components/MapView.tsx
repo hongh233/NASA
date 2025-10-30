@@ -7,6 +7,7 @@ import AnimatedRouteOverlay, { type RouteControls } from "./routePredictions/Ani
 import "./MapView.css";
 import type { FeatureCollection } from "geojson";
 import TopPositionBar from "./TopPositionBar";
+import { MapHudModal } from "./ToolBar/MapHudModal";
 
 type MapViewProps = {
   predictedData: FeatureCollection | null;
@@ -179,25 +180,26 @@ const MapView = ({
   return (
     <div className="map-container">
       <div ref={mapContainer} className="map-canvas" />
+      <MapHudModal />
       <div className="map-center-crosshair" />
 
-        <TopPositionBar view={currentView} />
-        
-        {isLoading ? (
-          <div className="map-loading-overlay" role="status" aria-live="polite">
-            <div className="map-loading-spinner" />
-            <div className="map-loading-text">Loading data…</div>
-          </div>
-        ) : null}
+      <TopPositionBar view={currentView} />
+      
+      {isLoading ? (
+        <div className="map-loading-overlay" role="status" aria-live="polite">
+          <div className="map-loading-spinner" />
+          <div className="map-loading-text">Loading data…</div>
+        </div>
+      ) : null}
 
-        <AnimatedRouteOverlay
-          map={mapRef.current}
-          isMapLoaded={isMapLoaded}
-          onStatusChange={onRouteStatusChange}
-          onControlsChange={onRouteControlsChange}
-          predictedData={predictedData}
-          iceData={iceData}
-        />
+      <AnimatedRouteOverlay
+        map={mapRef.current}
+        isMapLoaded={isMapLoaded}
+        onStatusChange={onRouteStatusChange}
+        onControlsChange={onRouteControlsChange}
+        predictedData={predictedData}
+        iceData={iceData}
+      />
     </div>
   );
 };

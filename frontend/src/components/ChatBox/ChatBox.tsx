@@ -68,9 +68,8 @@ export const ChatBox = () => {
         {!isMinimized && <h3>Arctic Assistant</h3>}
         <button
           className="minimize-button"
-          onClick={(e) => {
+          onClick={() => {
             setIsMinimized(!isMinimized);
-            e.currentTarget.blur();
           }}
           aria-label={isMinimized ? "Open chat" : "Close chat"}
         >
@@ -103,9 +102,6 @@ export const ChatBox = () => {
             <button 
               type="submit" 
               disabled={isLoading}
-              onClick={(e) => {
-                e.currentTarget.blur();
-              }}
             >
               {isLoading ? '...' : <div>➤</div>}
             </button>
