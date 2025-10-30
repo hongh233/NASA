@@ -24,14 +24,12 @@
   margin: 0 auto;
   padding: 14px 24px 18px;
   gap: 10px;
-  background: rgba(10, 18, 40, 0.12);
+  background: rgba(10, 18, 40, 0.08);
   border: 1px solid rgba(112, 144, 255, 0.14);
   border-radius: 14px;
   box-shadow:
     inset 0 0 8px rgba(255, 255, 255, 0.03),
     0 4px 12px rgba(2, 8, 28, 0.25);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
   transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
 }
 
@@ -86,7 +84,7 @@
 }
 
 /* ==============================
-   主 Timeline
+   Main Timeline
 ============================== */
 .calendar-timeline-main {
   display: flex;
