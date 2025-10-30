@@ -1,0 +1,183 @@
+/* ==============================
+   TOOLBAR
+============================== */
+
+.tool-bar {
+  position: absolute;
+  top: 16px;
+  left: 16px;
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  max-width: calc(100vw - 200px);
+  flex-wrap: nowrap;
+  z-index: 10;
+  pointer-events: none;
+}
+
+.tool-bar > * {
+  pointer-events: auto;
+}
+
+.tool-toggle {
+  display: inline-flex;
+  width: 48px;
+  min-width: 48px;
+  min-height: 88px;
+  align-items: center;
+  justify-content: center;
+  border-radius: 12px;
+  border: 1px solid rgba(112, 144, 255, 0.35);
+  background: rgba(10, 18, 40, 0.25);
+  color: #f4f7ff;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.tool-toggle:hover,
+.tool-toggle:focus-visible {
+  background: rgba(126, 162, 255, 0.35);
+  border-color: rgba(126, 162, 255, 0.55);
+}
+
+.tool-toggle__icon span {
+  display: block;
+  width: 20px;
+  height: 2px;
+  border-radius: 999px;
+  background: currentColor;
+  transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.tool-bar__cards {
+  display: flex;
+  align-items: stretch;
+  flex-wrap: wrap;
+  gap: 12px;
+  transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+/* ───────────────────────────────
+   TOOL CARDS
+─────────────────────────────── */
+.tool-card {
+  pointer-events: auto;
+  width: clamp(160px, 18vw, 220px);
+  box-sizing: border-box;
+  padding: 0.6rem 0.9rem;
+  border-radius: 12px;
+  background: rgba(10, 18, 40, 0.08);
+  border: 1px solid rgba(112, 144, 255, 0.14);
+  box-shadow: 0 6px 12px rgba(2, 8, 28, 0.18);
+  color: #f4f7ff;
+  font-size: 0.95rem;
+}
+
+.tool-card h3 {
+  margin: 0;
+  font-size: 0.85rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.tool-card button {
+  background: rgba(98, 134, 255, 0.28);
+  color: #f4f7ff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.tool-card button:hover {
+  background: rgba(126, 162, 255, 0.75);
+}
+
+.tool-card--stacked {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: 0.35rem;
+}
+
+.tool-card--route {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.animated-route-status {
+  font-size: 0.85rem;
+  color: rgba(220, 230, 255, 0.85);
+  min-height: 1.2rem;
+}
+
+@media (max-width: 720px) {
+  .tool-bar {
+    left: 8px;
+    top: 8px;
+    flex-direction: column;
+    gap: 8px;
+    max-width: calc(100vw - 16px);
+  }
+
+  .tool-card {
+    width: calc(100vw - 32px);
+  }
+}
+
+/* ───────────────────────────────
+   PREDICT ICE FORM
+─────────────────────────────── */
+.tool-card--predict label {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.35rem;
+  margin-bottom: 0.6rem;
+  width: 100%;
+}
+
+.tool-card--predict label input {
+  width: 100%;
+  box-sizing: border-box;
+  background: rgba(6, 12, 28, 0.7);
+  border: 1px solid rgba(112, 144, 255, 0.3);
+  border-radius: 8px;
+  color: #f4f7ff;
+  padding: 0.4rem 0.5rem;
+  font-size: 0.85rem;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.tool-card--predict label input:focus {
+  outline: none;
+  border-color: rgba(140, 170, 255, 0.6);
+  background: rgba(10, 18, 40, 0.85);
+}
+
+/* form buttons container */
+.predict-controls {
+  display: flex;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-top: 0.6rem;
+}
+
+.predict-controls button {
+  background: rgba(98, 134, 255, 0.28);
+  color: #f4f7ff;
+  border: none;
+  border-radius: 8px;
+  padding: 0.4rem 0.9rem;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.predict-controls button:hover {
+  background: rgba(126, 162, 255, 0.75);
+}
