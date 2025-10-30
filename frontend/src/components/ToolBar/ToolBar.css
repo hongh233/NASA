@@ -19,6 +19,9 @@
   pointer-events: auto;
 }
 
+/* ───────────────────────────────
+   TOOL TOGGLE BUTTON
+─────────────────────────────── */
 .tool-toggle {
   display: inline-flex;
   width: 48px;
@@ -41,6 +44,18 @@
   border-color: rgba(126, 162, 255, 0.55);
 }
 
+.tool-toggle:focus-visible {
+  outline: 2px solid rgba(98, 134, 255, 0.8);
+  outline-offset: 3px;
+}
+
+/* Icon animation */
+.tool-toggle__icon {
+  display: inline-flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
 .tool-toggle__icon span {
   display: block;
   width: 20px;
@@ -50,12 +65,35 @@
   transition: transform 0.2s ease, opacity 0.2s ease;
 }
 
+.tool-toggle--active .tool-toggle__icon span:nth-child(1) {
+  transform: translateY(8px) rotate(45deg);
+}
+
+.tool-toggle--active .tool-toggle__icon span:nth-child(2) {
+  opacity: 0;
+}
+
+.tool-toggle--active .tool-toggle__icon span:nth-child(3) {
+  transform: translateY(-8px) rotate(-45deg);
+}
+
+/* Toolbar cards container */
 .tool-bar__cards {
   display: flex;
   align-items: stretch;
   flex-wrap: wrap;
   gap: 12px;
   transition: opacity 0.2s ease, transform 0.2s ease;
+}
+
+.tool-bar__cards--hidden {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .tool-bar {
+    max-width: calc(100vw - 32px);
+  }
 }
 
 /* ───────────────────────────────
@@ -81,6 +119,7 @@
   letter-spacing: 0.02em;
 }
 
+/* Buttons inside cards */
 .tool-card button {
   background: rgba(98, 134, 255, 0.28);
   color: #f4f7ff;
@@ -96,6 +135,7 @@
   background: rgba(126, 162, 255, 0.75);
 }
 
+/* Layout variants */
 .tool-card--stacked {
   display: flex;
   flex-direction: column;
@@ -109,24 +149,13 @@
   gap: 0.5rem;
 }
 
+/* ───────────────────────────────
+   ROUTE TOOLBAR
+─────────────────────────────── */
 .animated-route-status {
   font-size: 0.85rem;
   color: rgba(220, 230, 255, 0.85);
   min-height: 1.2rem;
-}
-
-@media (max-width: 720px) {
-  .tool-bar {
-    left: 8px;
-    top: 8px;
-    flex-direction: column;
-    gap: 8px;
-    max-width: calc(100vw - 16px);
-  }
-
-  .tool-card {
-    width: calc(100vw - 32px);
-  }
 }
 
 /* ───────────────────────────────
@@ -159,7 +188,7 @@
   background: rgba(10, 18, 40, 0.85);
 }
 
-/* form buttons container */
+/* Buttons row */
 .predict-controls {
   display: flex;
   justify-content: center;
@@ -180,4 +209,21 @@
 
 .predict-controls button:hover {
   background: rgba(126, 162, 255, 0.75);
+}
+
+/* ───────────────────────────────
+   RESPONSIVE (Small screens)
+─────────────────────────────── */
+@media (max-width: 720px) {
+  .tool-bar {
+    left: 8px;
+    top: 8px;
+    flex-direction: column;
+    gap: 8px;
+    max-width: calc(100vw - 16px);
+  }
+
+  .tool-card {
+    width: calc(100vw - 32px);
+  }
 }

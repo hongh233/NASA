@@ -1,16 +1,33 @@
+/* ==============================
+   MAP CONTAINER & CANVAS
+============================== */
 .map-container {
   position: relative;
+  width: 100%;
+  height: 100%;
+  border-radius: 18px;
+  overflow: hidden;
+  border: 1px solid rgba(92, 132, 255, 0.25);
+  background: rgba(8, 17, 40, 0.35);
 }
 
+.map-canvas {
+  width: 100%;
+  height: 100%;
+}
+
+/* ==============================
+   LOADING OVERLAY
+============================== */
 .map-loading-overlay {
   position: absolute;
-  inset: 0; /* top:0; right:0; bottom:0; left:0 */
+  inset: 0;
   display: flex;
   align-items: center;
   justify-content: center;
   flex-direction: column;
   gap: 8px;
-  background: rgba(0,0,0,0.25);
+  background: rgba(0, 0, 0, 0.25);
   z-index: 80;
   pointer-events: none;
 }
@@ -19,7 +36,7 @@
   width: 36px;
   height: 36px;
   border-radius: 50%;
-  border: 3px solid rgba(255,255,255,0.18);
+  border: 3px solid rgba(255, 255, 255, 0.18);
   border-top-color: #fff;
   animation: map-spin 1s linear infinite;
 }
@@ -30,10 +47,14 @@
   font-weight: 600;
 }
 
-@keyframes map-spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+@keyframes map-spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
 
-
-
+/* ==============================
+   CROSSHAIR (Map Center Indicator)
+============================== */
 .map-center-crosshair {
   position: absolute;
   top: 50%;
@@ -52,8 +73,10 @@
   background: rgba(255, 255, 255, 0.8);
   border-radius: 2px;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.4);
+  transition: opacity 0.2s ease, background 0.3s ease;
 }
 
+/* Cross shape */
 .map-center-crosshair::before {
   top: 50%;
   left: 0;
@@ -70,12 +93,36 @@
   transform: translateX(-50%);
 }
 
-.map-center-crosshair::before,
-.map-center-crosshair::after {
-  transition: opacity 0.2s ease, background 0.3s ease;
-}
-
+/* Active highlight */
 .map-container:active .map-center-crosshair::before,
 .map-container:active .map-center-crosshair::after {
   background: rgba(100, 200, 255, 0.9);
+}
+
+/* ==============================
+   STATUS / ERROR BANNERS
+============================== */
+.map-status-banner,
+.map-error-banner {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  max-width: clamp(220px, 32vw, 360px);
+  padding: 0.65rem 0.9rem;
+  border-radius: 10px;
+  font-size: 0.82rem;
+  box-shadow: 0 20px 30px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+}
+
+.map-status-banner {
+  background: rgba(17, 30, 60, 0.85);
+  border: 1px solid rgba(140, 170, 255, 0.45);
+  color: #f4f7ff;
+}
+
+.map-error-banner {
+  background: rgba(180, 48, 61, 0.85);
+  border: 1px solid rgba(255, 139, 149, 0.65);
+  color: #fff5f6;
 }
