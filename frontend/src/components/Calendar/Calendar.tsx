@@ -1,4 +1,4 @@
-import { useMemo, useState, useEffect, useCallback } from "react";
+import { useMemo, useState, useCallback } from "react";
 import { useIceExtentContext } from "../../context/IceExtentContext";
 import "./Calendar.css";
 
@@ -30,8 +30,12 @@ const CalendarNudgeButton: React.FC<CalendarNudgeButtonProps> = ({
 
 
 export const Calendar = () => {
-  const { isoDate, setDateFromIso, availableDates, selectedDate, isLoading } =
-    useIceExtentContext();
+  const { 
+    isoDate, 
+    setDateFromIso, 
+    availableDates, 
+    selectedDate, 
+    isLoading } = useIceExtentContext();
 
 
   const list = useMemo(
@@ -108,16 +112,31 @@ export const Calendar = () => {
 
         <div className="calendar-timeline-main">
           <div className="calendar-timeline-side">
-            <CalendarNudgeButton label="-Y" title="Previous year" onClick={() => nudge("year", -1)} />
-            <CalendarNudgeButton label="-M" title="Previous month" onClick={() => nudge("month", -1)} />
-            <CalendarNudgeButton label="-D" title="Previous day" onClick={() => nudge("day", -1)} />
+            <CalendarNudgeButton 
+              label="-Y" 
+              title="Previous year" 
+              onClick={() => nudge("year", -1)} 
+              disabled={isLoading}
+            />
+            <CalendarNudgeButton 
+              label="-M" 
+              title="Previous month" 
+              onClick={() => nudge("month", -1)} 
+              disabled={isLoading}
+            />
+            <CalendarNudgeButton 
+              label="-D" 
+              title="Previous day"
+              onClick={() => nudge("day", -1)} 
+              disabled={isLoading}
+            />
           </div>
 
           <div className="calendar-timeline-center">
             <div className="timeline">
               <input
                 type="range"
-                className="timeline__slider"
+                className={`timeline__slider ${isSliding ? "is-sliding" : ""}`}
                 min={0}
                 max={max}
                 step={1}
@@ -129,15 +148,30 @@ export const Calendar = () => {
                 onTouchEnd={handleEnd}
                 onKeyUp={handleEnd}
                 onBlur={handleEnd}
-                disabled={list.length === 0}
+                disabled={list.length === 0 || isLoading}
               />
             </div>
           </div>
 
           <div className="calendar-timeline-side">
-            <CalendarNudgeButton label="+D" title="Next day" onClick={() => nudge("day", 1)} />
-            <CalendarNudgeButton label="+M" title="Next month" onClick={() => nudge("month", 1)} />
-            <CalendarNudgeButton label="+Y" title="Next year" onClick={() => nudge("year", 1)} />
+            <CalendarNudgeButton 
+              label="+D" 
+              title="Next day" 
+              onClick={() => nudge("day", 1)} 
+              disabled={isLoading}
+            />
+            <CalendarNudgeButton 
+              label="+M" 
+              title="Next month" 
+              onClick={() => nudge("month", 1)} 
+              disabled={isLoading}
+            />
+            <CalendarNudgeButton 
+              label="+Y" 
+              title="Next year" 
+              onClick={() => nudge("year", 1)} 
+              disabled={isLoading}
+            />
           </div>
         </div>
       </div>
