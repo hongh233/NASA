@@ -1,184 +1,124 @@
-/* ==============================
-   TOOLBAR
-============================== */
-
 .tool-bar {
-  position: absolute;
+  position: fixed;
   top: 16px;
   left: 16px;
+  z-index: 100;
   display: flex;
-  align-items: flex-start;
+  flex-direction: column;
   gap: 10px;
-  max-width: calc(100vw - 200px);
-  flex-wrap: nowrap;
-  z-index: 10;
-  pointer-events: none;
 }
 
-.tool-bar > * {
-  pointer-events: auto;
-}
-
-/* ───────────────────────────────
-   TOOL TOGGLE BUTTON
-─────────────────────────────── */
 .tool-toggle {
   display: inline-flex;
-  width: 48px;
-  min-width: 48px;
-  min-height: 88px;
   align-items: center;
-  justify-content: center;
-  border-radius: 12px;
+  justify-content: space-between;
+  gap: 10px;
+  width: 140px;
+  padding: 10px 14px;
+  border-radius: 10px;
   border: 1px solid rgba(112, 144, 255, 0.35);
-  background: rgba(10, 18, 40, 0.25);
+  background: rgba(10, 18, 40, 0.45);
   color: #f4f7ff;
-  font-size: 0.95rem;
+  font-size: 0.9rem;
+  font-weight: 600;
   cursor: pointer;
-  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.35);
+  transition: background 0.25s ease, transform 0.25s ease;
 }
 
-.tool-toggle:hover,
-.tool-toggle:focus-visible {
-  background: rgba(126, 162, 255, 0.35);
-  border-color: rgba(126, 162, 255, 0.55);
+.tool-toggle:hover {
+  background: rgba(126, 162, 255, 0.55);
+  transform: scale(1.05);
 }
 
-.tool-toggle:focus-visible {
-  outline: 2px solid rgba(98, 134, 255, 0.8);
-  outline-offset: 3px;
+.toolbox-label {
+  font-size: 0.9rem;
+  letter-spacing: 0.02em;
 }
 
-/* Icon animation */
-.tool-toggle__icon {
-  display: inline-flex;
-  flex-direction: column;
-  gap: 6px;
+.toolbox-icon {
+  font-size: 1.1rem;
 }
 
-.tool-toggle__icon span {
-  display: block;
-  width: 20px;
-  height: 2px;
-  border-radius: 999px;
-  background: currentColor;
-  transition: transform 0.2s ease, opacity 0.2s ease;
-}
-
-.tool-toggle--active .tool-toggle__icon span:nth-child(1) {
-  transform: translateY(8px) rotate(45deg);
-}
-
-.tool-toggle--active .tool-toggle__icon span:nth-child(2) {
-  opacity: 0;
-}
-
-.tool-toggle--active .tool-toggle__icon span:nth-child(3) {
-  transform: translateY(-8px) rotate(-45deg);
-}
-
-/* Toolbar cards container */
-.tool-bar__cards {
-  display: flex;
-  align-items: stretch;
-  flex-wrap: wrap;
-  gap: 12px;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-}
-
-.tool-bar__cards--hidden {
+/* Modal Panel */
+.toolbox-modal {
   display: none;
+  position: absolute;
+  top: 60px;
+  left: 0;
+  background: rgba(10, 18, 40, 0.08);
+  border: 1px solid rgba(112, 144, 255, 0.15);
+  border-radius: 12px;
+  padding: 14px 18px;
+  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+  color: #e5e7eb;
+  width: clamp(240px, 20vw, 260px);
+  flex-direction: column;
+  gap: 12px;
+  animation: fadeIn 0.25s ease;
 }
 
-@media (max-width: 960px) {
-  .tool-bar {
-    max-width: calc(100vw - 32px);
+.toolbox-modal.visible {
+  display: flex;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
-/* ───────────────────────────────
-   TOOL CARDS
-─────────────────────────────── */
+/* Tool Cards */
 .tool-card {
   pointer-events: auto;
-  width: clamp(160px, 18vw, 220px);
-  box-sizing: border-box;
-  padding: 0.6rem 0.9rem;
-  border-radius: 12px;
+  padding: 10px 12px;
+  border-radius: 10px;
   background: rgba(10, 18, 40, 0.08);
   border: 1px solid rgba(112, 144, 255, 0.14);
-  box-shadow: 0 6px 12px rgba(2, 8, 28, 0.18);
-  color: #f4f7ff;
-  font-size: 0.95rem;
+  box-shadow: 0 2px 8px rgba(2, 8, 28, 0.18);
+  font-size: 0.82rem;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .tool-card h3 {
   margin: 0;
-  font-size: 0.85rem;
+  font-size: 0.78rem;
   font-weight: 600;
-  letter-spacing: 0.02em;
+  color: #b9bcc5;
+  text-transform: uppercase;
 }
 
-/* Buttons inside cards */
-.tool-card button {
-  background: rgba(98, 134, 255, 0.28);
-  color: #f4f7ff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.35rem 0.6rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.tool-card button:hover {
-  background: rgba(126, 162, 255, 0.75);
-}
-
-/* Layout variants */
-.tool-card--stacked {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 0.35rem;
-}
-
-.tool-card--route {
-  display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
-}
-
-/* ───────────────────────────────
-   ROUTE TOOLBAR
-─────────────────────────────── */
 .animated-route-status {
-  font-size: 0.85rem;
-  color: rgba(220, 230, 255, 0.85);
-  min-height: 1.2rem;
+  font-size: 0.75rem;
+  color: rgba(230, 232, 240, 0.85);
+  min-height: 1.1rem;
 }
 
-/* ───────────────────────────────
-   PREDICT ICE FORM
-─────────────────────────────── */
+/* Predict Form */
 .tool-card--predict label {
   display: flex;
   flex-direction: column;
-  align-items: flex-start;
-  gap: 0.35rem;
-  margin-bottom: 0.6rem;
-  width: 100%;
+  gap: 0.3rem;
+  margin-bottom: 0.4rem;
+  color: #d3d6dd;
+  font-size: 0.76rem;
 }
 
 .tool-card--predict label input {
   width: 100%;
-  box-sizing: border-box;
   background: rgba(6, 12, 28, 0.7);
   border: 1px solid rgba(112, 144, 255, 0.3);
-  border-radius: 8px;
+  border-radius: 6px;
   color: #f4f7ff;
-  padding: 0.4rem 0.5rem;
-  font-size: 0.85rem;
+  padding: 0.3rem 0.5rem;
+  font-size: 0.78rem;
   transition: border-color 0.2s ease, background 0.2s ease;
 }
 
@@ -188,42 +128,33 @@
   background: rgba(10, 18, 40, 0.85);
 }
 
-/* Buttons row */
+/* Buttons */
+.tool-card button {
+  background: rgba(98, 134, 255, 0.25);
+  color: #f4f7ff;
+  border: none;
+  border-radius: 6px;
+  padding: 0.35rem 0.6rem;
+  font-size: 0.8rem;
+  cursor: pointer;
+  font-weight: 600;
+  transition: background 0.2s ease, transform 0.15s ease;
+}
+
+.tool-card button:hover {
+  background: rgba(126, 162, 255, 0.55);
+  transform: translateY(-1px);
+}
+
 .predict-controls {
   display: flex;
   justify-content: center;
-  gap: 0.6rem;
-  margin-top: 0.6rem;
+  gap: 30px;
+  margin-top: 0.4rem;
 }
 
-.predict-controls button {
-  background: rgba(98, 134, 255, 0.28);
-  color: #f4f7ff;
-  border: none;
-  border-radius: 8px;
-  padding: 0.4rem 0.9rem;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background 0.2s ease;
-}
-
-.predict-controls button:hover {
-  background: rgba(126, 162, 255, 0.75);
-}
-
-/* ───────────────────────────────
-   RESPONSIVE (Small screens)
-─────────────────────────────── */
-@media (max-width: 720px) {
-  .tool-bar {
-    left: 8px;
-    top: 8px;
-    flex-direction: column;
-    gap: 8px;
-    max-width: calc(100vw - 16px);
-  }
-
-  .tool-card {
-    width: calc(100vw - 32px);
-  }
+.tool-card .error {
+  font-size: 0.72rem;
+  color: #ff9e9e;
+  margin-top: 0.3rem;
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { RouteControls } from "../routePredictions/AnimatedRouteOverlay";
 import { predictIceExtent } from "../../services/icePredictionAPI";
 import type { FeatureCollection } from "geojson";
@@ -21,6 +21,7 @@ export const ToolBar = ({
   const [predictDate, setPredictDate] = useState<string>("2026-01-01");
   const [predictRadius, setPredictRadius] = useState<number>(500);
   const [predictThresh, setPredictThresh] = useState<number>(0.5);
+  const [expanded, setExpanded] = useState(false);
 
   const routeStatusLabel =
     routeStatus === "requesting"
@@ -33,7 +34,11 @@ export const ToolBar = ({
     setPredicting(true);
     setPredictError(null);
     try {
-      const result = await predictIceExtent(predictDate, predictRadius, predictThresh);
+      const result = await predictIceExtent(
+        predictDate,
+        predictRadius,
+        predictThresh
+      );
       setPredictedData(result.feature_collection);
     } catch (err: any) {
       setPredictError(err?.message ?? String(err));
@@ -43,10 +48,32 @@ export const ToolBar = ({
     }
   };
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth <= 1024) {
+        setExpanded(false);
+      }
+    };
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   return (
     <div className="tool-bar">
-      <div id="mission-tools-panel">
-        {/* ───── Route Tools ───── */}
+      <button
+        className="tool-toggle"
+        onClick={() => setExpanded((v) => !v)}
+        aria-label="Toggle Toolbox"
+      >
+        <span className="toolbox-label">Toolbox</span>
+        <span className="toolbox-icon">{expanded ? "✕" : "☰"}</span>
+      </button>
+
+      <div
+        id="mission-tools-panel"
+        className={`toolbox-modal ${expanded ? "visible" : ""}`}
+      >
         <div className="tool-card tool-card--stacked tool-card--route">
           <h3>Route Tools</h3>
           <button
@@ -59,7 +86,6 @@ export const ToolBar = ({
           <span className="animated-route-status">{routeStatusLabel}</span>
         </div>
 
-        {/* ───── Predict Ice ───── */}
         <div className="tool-card tool-card--stacked tool-card--predict">
           <h3>Predict Ice</h3>
 
