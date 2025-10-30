@@ -44,8 +44,8 @@ const MapView = ({
     const map = new mapboxgl.Map({
       container: mapContainer.current,
       style: "mapbox://styles/mapbox/dark-v11",
-      center: [-74.0060152, 40.7127281],
-      zoom: 5,
+      center: [-76.0060152, 58.7127281],
+      zoom: 3.5,
       maxZoom: 6,
       pitch: 0,
       bearing: 0,
@@ -59,6 +59,9 @@ const MapView = ({
 
       const nav = new mapboxgl.NavigationControl({ visualizePitch: true });
       map.addControl(nav, "top-right");
+
+      // map.setPaintProperty('water', 'fill-color', '#243447');
+      // map.setPaintProperty('waterway', 'line-color', '#004cff');
 
       map.once("render", () => {
         const compassButton = document.querySelector(".mapboxgl-ctrl-compass") as HTMLButtonElement | null;
@@ -110,8 +113,8 @@ const MapView = ({
       source: "iceLoss",
       paint: {
         "circle-radius": 3,
-        "circle-color": "#ff4b4b",
-        "circle-opacity": 0.7,
+        "circle-color": "#ffffff",
+        "circle-opacity": 0.5,
       },
     });
   }, [iceData, isMapLoaded, predictedData]);
@@ -141,8 +144,8 @@ const MapView = ({
       source: "predictedIce",
       paint: {
         "circle-radius": 3,
-        "circle-color": "#4bd7ff",
-        "circle-opacity": 0.9,
+        "circle-color": "#a8e6ff",
+        "circle-opacity": 0.5,
       },
     });
   }, [predictedData, isMapLoaded]);
