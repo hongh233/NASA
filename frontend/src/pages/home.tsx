@@ -6,7 +6,6 @@ import type { RouteControls } from "../components/routePredictions/AnimatedRoute
 import type { FeatureCollection } from "geojson";
 import { useIceExtentContext } from "../context/IceExtentContext";
 import { ChatBox } from "../components/ChatBox";
-import "../components/ChatBox.css";
 import { ToolBar } from "../components/ToolBar/ToolBar";
 
 const HomePage = () => {

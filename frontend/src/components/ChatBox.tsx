@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useIceExtentContext } from '../context/IceExtentContext';
+import "../components/ChatBox.css";
 
 interface Message {
   role: 'user' | 'assistant';

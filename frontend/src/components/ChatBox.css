@@ -1,7 +1,7 @@
 .chat-box {
   position: fixed;
   left: 20px;  /* Changed from right to left */
-  bottom: 100px;  /* Positioned from bottom */
+  bottom: 30px;  /* Positioned from bottom */
   width: 320px;
   height: 480px;
   background: rgba(25, 32, 48, 0.95);
